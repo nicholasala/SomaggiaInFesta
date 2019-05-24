@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SomaggiaInFesta</string>
+    <string name="waiting_network">In attesa di operazioni sulla rete</string>
+    <string name="founded_kitchen">Cucina esistente in questa rete</string>
+    <string name="not_founded_kitchen">Impossibile trovare una cucina nella rete</string>
+    <string name="network_error">Errore con la connessione alla rete</string>
+</resources>
