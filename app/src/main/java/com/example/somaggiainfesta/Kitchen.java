@@ -2,12 +2,16 @@ package com.example.somaggiainfesta;
 
 import android.os.Bundle;
 import android.provider.Settings;
-import android.widget.TableLayout;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v7.view.menu.MenuView;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class Kitchen extends RestaurantModule{
     private TextView infoText;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +45,27 @@ public class Kitchen extends RestaurantModule{
 
                 //ui setting
                 setContentView(R.layout.activity_kitchen);
+                bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+
+                bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        //handle action case
+                        switch (item.getItemId()) {
+                            case R.id.action_actives:
+
+                                break;
+                            case R.id.action_served:
+
+                                break;
+                            case R.id.action_settings:
+
+                                break;
+                        }
+                        return true;
+                    }
+                });
+
                 break;
         }
     }
