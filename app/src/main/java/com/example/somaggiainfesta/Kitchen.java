@@ -5,13 +5,19 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.view.menu.MenuView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Kitchen extends RestaurantModule{
     private TextView infoText;
     private BottomNavigationView bottomNavigationView;
+    private CommandsDataAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +52,6 @@ public class Kitchen extends RestaurantModule{
                 //ui setting
                 setContentView(R.layout.activity_kitchen);
                 bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-
                 bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -66,7 +71,35 @@ public class Kitchen extends RestaurantModule{
                     }
                 });
 
+                //setup recycler view
+                //TODO da fare solo nel caso attivi ?
+                setCommandsDataAdapter();
+                setupRecyclerView();
+
                 break;
         }
+    }
+
+    private void setCommandsDataAdapter(){
+        List<Command> commands = new ArrayList<>();
+
+        Command a = new Command(13, 12, "patatine", new String[]{}, 3);
+
+        Command b = new Command(13, 12, "panino salsiccia", new String[]{"maionese", "ketchup"}, 2);
+
+        Command c = new Command(13, 12, "panino salsiccia", new String[]{"cipolle", "pomodori"}, 1);
+
+        commands.add(a);
+        commands.add(b);
+        commands.add(c);
+
+        mAdapter = new CommandsDataAdapter(commands);
+    }
+
+    private void setupRecyclerView(){
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setAdapter(mAdapter);
     }
 }

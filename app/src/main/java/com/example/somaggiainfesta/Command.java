@@ -6,7 +6,8 @@ public class Command {
     private int id;
     private int cashdesk;
     private String name;
-    private ArrayList<String> added;
+    private String[] added;
+    private int number;
 
     public Command(int id, String name) {
         this.id = id;
@@ -19,11 +20,19 @@ public class Command {
         this.name = name;
     }
 
-    public Command(int id, int cashdesk, String name, ArrayList<String> added) {
+    public Command(int id, int cashdesk, String name, String[] added) {
         this.id = id;
         this.cashdesk = cashdesk;
         this.name = name;
         this.added = added;
+    }
+
+    public Command(int id, int cashdesk, String name, String[] added, int number) {
+        this.id = id;
+        this.cashdesk = cashdesk;
+        this.name = name;
+        this.added = added;
+        this.number = number;
     }
 
     public int getId() {
@@ -50,11 +59,19 @@ public class Command {
         this.name = name;
     }
 
-    public ArrayList<String> getAdded() {
+    public String[] getAdded() {
         return added;
     }
 
-    public void setAdded(ArrayList<String> added) {
+    public void setAdded(String[] added) {
         this.added = added;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 }
