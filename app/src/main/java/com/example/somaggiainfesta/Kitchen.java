@@ -5,8 +5,10 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.view.menu.MenuView;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,7 +16,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Kitchen extends RestaurantModule{
+public class Kitchen extends RestaurantModule implements SwipeController.RecyclerItemTouchHelperListener{
     private TextView infoText;
     private BottomNavigationView bottomNavigationView;
     private CommandsDataAdapter mAdapter;
@@ -100,6 +102,17 @@ public class Kitchen extends RestaurantModule{
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
+
+        //attach swipe helper to recyclerview
+        SwipeController sc = new SwipeController(this);
+        ItemTouchHelper ith = new ItemTouchHelper(sc);
+        ith.attachToRecyclerView(recyclerView);
+    }
+
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+        //TODO rimuovere comanda
     }
 }

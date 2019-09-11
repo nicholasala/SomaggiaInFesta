@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -55,12 +57,16 @@ public class CommandsDataAdapter extends RecyclerView.Adapter<CommandsDataAdapte
     //ViewHolder
     public class CommandViewHolder extends RecyclerView.ViewHolder{
         private TextView name, added, number;
+        public LinearLayout viewForeground;
+        public RelativeLayout viewBackground;
 
         public CommandViewHolder(View view){
             super(view);
             name = (TextView) view.findViewById(R.id.name);
             added = (TextView) view.findViewById(R.id.added);
             number = (TextView) view.findViewById(R.id.number);
+            viewForeground = view.findViewById(R.id.view_foreground);
+            viewBackground = view.findViewById(R.id.view_background);
         }
     }
 }
