@@ -54,6 +54,11 @@ public class CommandsDataAdapter extends RecyclerView.Adapter<CommandsDataAdapte
         return commands.size();
     }
 
+    public void removeCommand(int position){
+        commands.remove(position);
+        notifyItemRemoved(position);
+    }
+
     //ViewHolder
     public class CommandViewHolder extends RecyclerView.ViewHolder{
         private TextView name, added, number;

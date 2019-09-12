@@ -30,12 +30,6 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         findKitchen();
     }
 
-    //TODO RICOMINCIARE UTILIZZANDO UNA BOTTOM BAR
-    //TODO OGNI ELEMENTO NEGLI ATTIVI POTRÀ ESSERE TRASCINATO PER CONFERMARE CHE LA COMANDA È PRONTA
-    //TODO CON UN'ANIMAZIONE VERDE AL TRASCINAMENTO
-    //TODO https://www.truiton.com/2017/01/android-bottom-navigation-bar-example/
-    //TODO https://www.androidhive.info/2017/09/android-recyclerview-swipe-delete-undo-using-itemtouchhelper/
-
     @Override
     public void onKitchenInfo(Keys.kitchenState state) {
         switch (state){
@@ -113,6 +107,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-        //TODO rimuovere comanda
+        mAdapter.removeCommand(position);
+        Toast.makeText(this, "Comanda confermata", Toast.LENGTH_SHORT).show();
     }
 }
