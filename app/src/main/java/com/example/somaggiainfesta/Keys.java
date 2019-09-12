@@ -12,4 +12,9 @@ public class Keys {
         NOTFOUND,
         NETERR;
     }
+
+    public enum CommandState{
+        ACTIVE,
+        STATIC;
+    }
 }

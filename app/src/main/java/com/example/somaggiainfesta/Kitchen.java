@@ -1,10 +1,8 @@
 package com.example.somaggiainfesta;
 
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,13 +11,12 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Kitchen extends RestaurantModule implements SwipeController.RecyclerItemTouchHelperListener{
     private TextView infoText;
     private BottomNavigationView bottomNavigationView;
-    private CommandsDataAdapter mAdapter;
+    private CommandsDataAdapter activesAdapter;
+    private CommandsDataAdapter servedAdapter;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,52 +49,56 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         //handle action case
+
+
+                        //TODO cambiare i fragment
+
                         switch (item.getItemId()) {
                             case R.id.action_actives:
-
+                                setupActivesRecyclerView();
                                 break;
                             case R.id.action_served:
-
+                                setupServedRecyclerView();
                                 break;
                             case R.id.action_settings:
-
+                                //TODO
                                 break;
                         }
                         return true;
                     }
                 });
 
-                //setup recycler view
-                //TODO da fare solo nel caso attivi ?
-                setCommandsDataAdapter();
-                setupRecyclerView();
+                //setup recycler view for commands
+                recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+
+                setActivesAdapter();
+                setServedAdapter();
+                setupActivesRecyclerView();
+
+
+                Command a = new Command(13, 12, "patatine", new String[]{}, 3);
+                Command b = new Command(13, 12, "panino salsiccia", new String[]{"maionese", "ketchup"}, 2);
+                Command c = new Command(13, 12, "panino salsiccia", new String[]{"cipolle", "pomodori"}, 1);
+                activesAdapter.putCommand(a);
+                activesAdapter.putCommand(b);
+                activesAdapter.putCommand(c);
 
                 break;
         }
     }
 
-    private void setCommandsDataAdapter(){
-        List<Command> commands = new ArrayList<>();
-
-        Command a = new Command(13, 12, "patatine", new String[]{}, 3);
-
-        Command b = new Command(13, 12, "panino salsiccia", new String[]{"maionese", "ketchup"}, 2);
-
-        Command c = new Command(13, 12, "panino salsiccia", new String[]{"cipolle", "pomodori"}, 1);
-
-        commands.add(a);
-        commands.add(b);
-        commands.add(c);
-
-        mAdapter = new CommandsDataAdapter(commands);
+    private void setActivesAdapter(){
+        activesAdapter = new CommandsDataAdapter(Keys.CommandState.ACTIVE);
     }
 
-    private void setupRecyclerView(){
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+    private void setServedAdapter(){
+        servedAdapter = new CommandsDataAdapter(Keys.CommandState.STATIC);
+    }
 
+    private void setupActivesRecyclerView(){
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(activesAdapter);
 
         //attach swipe helper to recyclerview
         SwipeController sc = new SwipeController(this);
@@ -105,9 +106,21 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         ith.attachToRecyclerView(recyclerView);
     }
 
+    private void setupServedRecyclerView(){
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(servedAdapter);
+    }
+
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-        mAdapter.removeCommand(position);
+        confirmCommand(activesAdapter.getCommand(position));
+        activesAdapter.removeCommand(position);
+    }
+
+    public void confirmCommand(Command c){
+        //TODO Inviare alla cassa identificata dal suo id la conferma della comanda
+        servedAdapter.putCommand(c);
         Toast.makeText(this, "Comanda confermata", Toast.LENGTH_SHORT).show();
     }
 }

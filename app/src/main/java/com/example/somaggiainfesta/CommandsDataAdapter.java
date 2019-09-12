@@ -12,19 +12,25 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO https://codeburst.io/android-swipe-menu-with-recyclerview-8f28a235ff28
-
 public class CommandsDataAdapter extends RecyclerView.Adapter<CommandsDataAdapter.CommandViewHolder> {
     private List<Command> commands;
+    private Keys.CommandState state;
 
-    CommandsDataAdapter(List<Command> commands){
-        this.commands = commands;
+    CommandsDataAdapter(Keys.CommandState state){
+        this.commands = new ArrayList<>();
+        this.state = state;
     }
 
     @NonNull
     @Override
     public CommandViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.command_row, viewGroup, false);
+        View itemView;
+
+        if(state == Keys.CommandState.ACTIVE)
+             itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.active_command_row, viewGroup, false);
+        else{
+            itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.active_command_row, viewGroup, false);
+        }
 
         return new CommandViewHolder(itemView);
     }
@@ -37,7 +43,7 @@ public class CommandsDataAdapter extends RecyclerView.Adapter<CommandsDataAdapte
         StringBuilder sb = new StringBuilder();
         String[] added = command.getAdded();
 
-        for(int a=0; a<added.length; a++){
+        for(int a=0; a<added.length - 1; a++){
             sb.append(added[a]);
             sb.append(" - ");
         }
@@ -59,6 +65,15 @@ public class CommandsDataAdapter extends RecyclerView.Adapter<CommandsDataAdapte
         notifyItemRemoved(position);
     }
 
+    public Command getCommand(int position){
+        return commands.get(position);
+    }
+
+    public void putCommand(Command c){
+        commands.add(c);
+        notifyItemInserted(commands.size() - 1);
+    }
+
     //ViewHolder
     public class CommandViewHolder extends RecyclerView.ViewHolder{
         private TextView name, added, number;
@@ -67,11 +82,14 @@ public class CommandsDataAdapter extends RecyclerView.Adapter<CommandsDataAdapte
 
         public CommandViewHolder(View view){
             super(view);
-            name = (TextView) view.findViewById(R.id.name);
-            added = (TextView) view.findViewById(R.id.added);
-            number = (TextView) view.findViewById(R.id.number);
-            viewForeground = view.findViewById(R.id.view_foreground);
-            viewBackground = view.findViewById(R.id.view_background);
+            name = (TextView) view.findViewById(R.id.active_name);
+            added = (TextView) view.findViewById(R.id.active_added);
+            number = (TextView) view.findViewById(R.id.active_number);
+
+            if(state == Keys.CommandState.ACTIVE){
+                viewForeground = view.findViewById(R.id.active_view_foreground);
+                viewBackground = view.findViewById(R.id.active_view_background);
+            }
         }
     }
 }
