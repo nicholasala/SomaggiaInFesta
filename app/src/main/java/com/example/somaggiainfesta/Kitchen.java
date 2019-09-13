@@ -53,7 +53,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                 //network setting
                 //android.provider.Settings.System.putInt(getContentResolver(), Settings.System.WIFI_USE_STATIC_IP, 1);
                 //android.provider.Settings.System.putString(getContentResolver(), Settings.System.WIFI_STATIC_IP, Keys.ip.kitchen_string);
-                //Toast.makeText(this, "Ip:"+android.provider.Settings.System.getString(getContentResolver(), Settings.System.WIFI_STATIC_IP), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Ip:"+android.provider.Settings.System.commandToString(getContentResolver(), Settings.System.WIFI_STATIC_IP), Toast.LENGTH_SHORT).show();
 
                 //ui setting
                 setContentView(R.layout.activity_kitchen);
@@ -87,9 +87,9 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                 servedAdapter = new StaticCommandsAdapter();
                 //setup manually first fragment
 
-                Command a = new Command(13, 12, "patatine", new String[]{}, 3);
-                Command b = new Command(13, 12, "panino salsiccia", new String[]{"maionese", "ketchup"}, 2);
-                Command c = new Command(13, 12, "arrosticini", new String[]{"cipolle", "pomodori"}, 1);
+                Command a = new Command(13, "patatine", 12, new String[]{}, 3);
+                Command b = new Command(13, "panino salsiccia", 12, new String[]{"maionese", "ketchup"}, 2);
+                Command c = new Command(13, "arrosticini", 12, new String[]{"cipolle", "pomodori"}, 1);
                 activesAdapter.putCommand(a);
                 activesAdapter.putCommand(b);
                 activesAdapter.putCommand(c);

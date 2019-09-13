@@ -5,19 +5,29 @@ import com.example.somaggiainfesta.data.Command;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
-
-import okio.ByteString;
 
 //tool for convert commands between json and Command class
 public class MessageConverter {
 
-    public Command getCommand(String c){
-        //TODO String to JSON to Command
-        return null;
+    public Command stringToCommand(String s){
+        try {
+            JSONObject json = new JSONObject(s);
+            Command converted = new Command(json.getInt("id"), json.getString("name"));
+            JSONArray jAdded = json.getJSONArray("added");
+
+            String[] sAdded = new String[jAdded.length()];
+            for(int i=0; i<jAdded.length(); i++)
+                sAdded[i] = jAdded.getString(i);
+
+            converted.setAdded(sAdded);
+            return converted;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    public String getString(Command c){
+    public String commandToString(Command c){
         JSONObject converted = new JSONObject();
         JSONArray added = new JSONArray();
 
@@ -29,6 +39,18 @@ public class MessageConverter {
                 added.put(s);
 
             converted.put("added", added);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return converted.toString();
+    }
+
+    public String commandToConfString(Command c){
+        JSONObject converted = new JSONObject();
+
+        try {
+            converted.put("id", c.getId());
         } catch (JSONException e) {
             e.printStackTrace();
         }

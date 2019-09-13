@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
-import okio.ByteString;
 
 public class KitchenNetOrchestrator extends WebSocketListener {
     private SparseArray<WebSocket> cashdesks;
@@ -35,7 +34,14 @@ public class KitchenNetOrchestrator extends WebSocketListener {
     @Override
     public void onMessage(@NotNull WebSocket webSocket, @NotNull String text) {
         //TODO AGGIUNGERE l'ID DELLA CASSA CORRETTO
-        context.addCommand(cv.getCommand(text));
+        Command c = cv.stringToCommand(text);
+
+        for(int i=0; i< cashdesks.size(); i++){
+            if(webSocket.request().url().host().equals(cashdesks.get(cashdesks.keyAt(i)).request().url().host())){
+                c.setId(cashdesks.keyAt(i));
+                context.addCommand(c);
+            }
+        }
     }
 
     @Override
@@ -52,6 +58,6 @@ public class KitchenNetOrchestrator extends WebSocketListener {
         //.request().url().host().toString()
         WebSocket ws = cashdesks.get(c.getCashdesk());
         if(ws != null)
-            ws.send(cv.getString(c));
+            ws.send(cv.commandToConfString(c));
     }
 }
