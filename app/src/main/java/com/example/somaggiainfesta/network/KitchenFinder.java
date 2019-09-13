@@ -1,12 +1,9 @@
-package com.example.somaggiainfesta;
+package com.example.somaggiainfesta.network;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 
-import java.io.IOException;
-import java.net.InetAddress;
+import com.example.somaggiainfesta.RestaurantModule;
+import com.example.somaggiainfesta.data.Keys;
 
 public class KitchenFinder extends AsyncTask<Void, Void, Keys.kitchenState> {
 

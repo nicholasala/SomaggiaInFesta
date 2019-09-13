@@ -13,13 +13,23 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.somaggiainfesta.adapters.ActiveCommandsAdapter;
+import com.example.somaggiainfesta.adapters.StaticCommandsAdapter;
+import com.example.somaggiainfesta.data.Command;
+import com.example.somaggiainfesta.data.Keys;
+import com.example.somaggiainfesta.fragments.ActiveCommandsFragment;
+import com.example.somaggiainfesta.fragments.SettingsFragment;
+import com.example.somaggiainfesta.fragments.StaticCommandsFragment;
+import com.example.somaggiainfesta.network.KitchenNetOrchestrator;
+
 public class Kitchen extends RestaurantModule implements SwipeController.RecyclerItemTouchHelperListener{
     private TextView infoText;
     private BottomNavigationView bottomNavigationView;
     private ActiveCommandsAdapter activesAdapter;
     private StaticCommandsAdapter servedAdapter;
-    RecyclerView activeRecycler;
-    RecyclerView staticRecycler;
+    private RecyclerView activeRecycler;
+    private RecyclerView staticRecycler;
+    private KitchenNetOrchestrator commandsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +80,11 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                     }
                 });
 
+                //setup network connection
+                commandsManager = new KitchenNetOrchestrator(this);
                 //setup adapters
-                setActivesAdapter();
-                setServedAdapter();
+                activesAdapter = new ActiveCommandsAdapter();
+                servedAdapter = new StaticCommandsAdapter();
                 //setup manually first fragment
 
                 Command a = new Command(13, 12, "patatine", new String[]{}, 3);
@@ -89,14 +101,6 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         }
     }
 
-    private void setActivesAdapter(){
-        activesAdapter = new ActiveCommandsAdapter();
-    }
-
-    private void setServedAdapter(){
-        servedAdapter = new StaticCommandsAdapter();
-    }
-
     private void setupActivesRecyclerView(){
         activeRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         activeRecycler.setItemAnimator(new DefaultItemAnimator());
@@ -105,7 +109,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         //attach swipe helper to recyclerview
         SwipeController sc = new SwipeController(this);
         ItemTouchHelper ith = new ItemTouchHelper(sc);
-        ith.attachToRecyclerView(activeRecycler); //TODO CAMBIARE RECYCLER VIEW
+        ith.attachToRecyclerView(activeRecycler);
     }
 
     private void setupServedRecyclerView(){
@@ -132,5 +136,9 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         //TODO Inviare alla cassa identificata dal suo id la conferma della comanda
         servedAdapter.putCommand(c);
         Toast.makeText(this, "Comanda confermata", Toast.LENGTH_SHORT).show();
+    }
+
+    public void addCommand(Command c){
+        activesAdapter.putCommand(c);
     }
 }

@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper.Callback;
 import android.view.View;
 
+import com.example.somaggiainfesta.adapters.ActiveCommandsAdapter;
+
 import static android.support.v7.widget.helper.ItemTouchHelper.*;
 
 public class SwipeController extends Callback {

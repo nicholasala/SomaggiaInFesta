@@ -1,4 +1,4 @@
-package com.example.somaggiainfesta;
+package com.example.somaggiainfesta.data;
 
 public class Keys {
     public static class ip{

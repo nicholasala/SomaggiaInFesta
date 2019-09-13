@@ -1,6 +1,4 @@
-package com.example.somaggiainfesta;
-
-import java.util.ArrayList;
+package com.example.somaggiainfesta.data;
 
 public class Command {
     private int id;

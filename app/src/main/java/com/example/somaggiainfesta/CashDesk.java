@@ -5,6 +5,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.somaggiainfesta.data.Keys;
+
 public class CashDesk extends RestaurantModule{
     private TextView infoText;
     private Button retryButton;
