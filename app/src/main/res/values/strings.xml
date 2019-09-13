@@ -4,4 +4,7 @@
     <string name="founded_kitchen">Cucina esistente in questa rete</string>
     <string name="not_founded_kitchen">Impossibile trovare una cucina nella rete</string>
     <string name="network_error">Errore con la connessione alla rete</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

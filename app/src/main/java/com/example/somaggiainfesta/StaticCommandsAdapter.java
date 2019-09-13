@@ -5,38 +5,27 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandsDataAdapter extends RecyclerView.Adapter<CommandsDataAdapter.CommandViewHolder> {
+public class StaticCommandsAdapter extends RecyclerView.Adapter<StaticCommandsAdapter.StaticCommandViewHolder> {
     private List<Command> commands;
-    private Keys.CommandState state;
 
-    CommandsDataAdapter(Keys.CommandState state){
+    StaticCommandsAdapter(){
         this.commands = new ArrayList<>();
-        this.state = state;
     }
 
     @NonNull
     @Override
-    public CommandViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View itemView;
-
-        if(state == Keys.CommandState.ACTIVE)
-             itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.active_command_row, viewGroup, false);
-        else{
-            itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.active_command_row, viewGroup, false);
-        }
-
-        return new CommandViewHolder(itemView);
+    public StaticCommandViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.static_command_row, viewGroup, false);
+        return new StaticCommandViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CommandViewHolder commandViewHolder, int i) {
+    public void onBindViewHolder(@NonNull StaticCommandViewHolder commandViewHolder, int i) {
         Command command = commands.get(i);
         commandViewHolder.name.setText(command.getName());
 
@@ -75,21 +64,14 @@ public class CommandsDataAdapter extends RecyclerView.Adapter<CommandsDataAdapte
     }
 
     //ViewHolder
-    public class CommandViewHolder extends RecyclerView.ViewHolder{
+    public class StaticCommandViewHolder extends RecyclerView.ViewHolder{
         private TextView name, added, number;
-        public LinearLayout viewForeground;
-        public RelativeLayout viewBackground;
 
-        public CommandViewHolder(View view){
+        public StaticCommandViewHolder(View view){
             super(view);
-            name = (TextView) view.findViewById(R.id.active_name);
-            added = (TextView) view.findViewById(R.id.active_added);
-            number = (TextView) view.findViewById(R.id.active_number);
-
-            if(state == Keys.CommandState.ACTIVE){
-                viewForeground = view.findViewById(R.id.active_view_foreground);
-                viewBackground = view.findViewById(R.id.active_view_background);
-            }
+            name = (TextView) view.findViewById(R.id.static_name);
+            added = (TextView) view.findViewById(R.id.static_added);
+            number = (TextView) view.findViewById(R.id.static_number);
         }
     }
 }

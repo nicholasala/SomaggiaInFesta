@@ -6,17 +6,10 @@
     android:layout_height="match_parent">
 
     <FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/frag_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:clipToPadding="false"
-        android:overScrollMode="never" />
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
 
     </FrameLayout>
 

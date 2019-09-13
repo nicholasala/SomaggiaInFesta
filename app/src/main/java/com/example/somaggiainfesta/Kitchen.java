@@ -3,6 +3,8 @@ package com.example.somaggiainfesta;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,9 +16,10 @@ import android.widget.Toast;
 public class Kitchen extends RestaurantModule implements SwipeController.RecyclerItemTouchHelperListener{
     private TextView infoText;
     private BottomNavigationView bottomNavigationView;
-    private CommandsDataAdapter activesAdapter;
-    private CommandsDataAdapter servedAdapter;
-    RecyclerView recyclerView;
+    private ActiveCommandsAdapter activesAdapter;
+    private StaticCommandsAdapter servedAdapter;
+    RecyclerView activeRecycler;
+    RecyclerView staticRecycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,33 +51,29 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                 bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        //handle action case
-
-
-                        //TODO cambiare i fragment
-
                         switch (item.getItemId()) {
                             case R.id.action_actives:
+                                inflateFragment(ActiveCommandsFragment.newInstance());
+                                activeRecycler = (RecyclerView)findViewById(R.id.active_recycler);
                                 setupActivesRecyclerView();
                                 break;
                             case R.id.action_served:
+                                inflateFragment(StaticCommandsFragment.newInstance());
+                                staticRecycler = (RecyclerView)findViewById(R.id.static_recycler);
                                 setupServedRecyclerView();
                                 break;
                             case R.id.action_settings:
-                                //TODO
+                                inflateFragment(SettingsFragment.newInstance());
                                 break;
                         }
                         return true;
                     }
                 });
 
-                //setup recycler view for commands
-                recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
-
+                //setup adapters
                 setActivesAdapter();
                 setServedAdapter();
-                setupActivesRecyclerView();
-
+                //setup manually first fragment
 
                 Command a = new Command(13, 12, "patatine", new String[]{}, 3);
                 Command b = new Command(13, 12, "panino salsiccia", new String[]{"maionese", "ketchup"}, 2);
@@ -83,33 +82,44 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                 activesAdapter.putCommand(b);
                 activesAdapter.putCommand(c);
 
+                inflateFragment(ActiveCommandsFragment.newInstance());
+                activeRecycler = (RecyclerView)findViewById(R.id.active_recycler);
+                setupActivesRecyclerView();
                 break;
         }
     }
 
     private void setActivesAdapter(){
-        activesAdapter = new CommandsDataAdapter(Keys.CommandState.ACTIVE);
+        activesAdapter = new ActiveCommandsAdapter();
     }
 
     private void setServedAdapter(){
-        servedAdapter = new CommandsDataAdapter(Keys.CommandState.STATIC);
+        servedAdapter = new StaticCommandsAdapter();
     }
 
     private void setupActivesRecyclerView(){
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(activesAdapter);
+        activeRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        activeRecycler.setItemAnimator(new DefaultItemAnimator());
+        activeRecycler.setAdapter(activesAdapter);
 
         //attach swipe helper to recyclerview
         SwipeController sc = new SwipeController(this);
         ItemTouchHelper ith = new ItemTouchHelper(sc);
-        ith.attachToRecyclerView(recyclerView);
+        ith.attachToRecyclerView(activeRecycler); //TODO CAMBIARE RECYCLER VIEW
     }
 
     private void setupServedRecyclerView(){
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(servedAdapter);
+        staticRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        staticRecycler.setItemAnimator(new DefaultItemAnimator());
+        staticRecycler.setAdapter(servedAdapter);
+    }
+
+    private void inflateFragment(Fragment frag){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frag_container, frag);
+        transaction.commit();
+        //force transaction execution to avoid null pointer exception
+        getSupportFragmentManager().executePendingTransactions();
     }
 
     @Override
