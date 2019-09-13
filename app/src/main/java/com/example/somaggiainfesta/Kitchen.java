@@ -77,7 +77,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
 
                 Command a = new Command(13, 12, "patatine", new String[]{}, 3);
                 Command b = new Command(13, 12, "panino salsiccia", new String[]{"maionese", "ketchup"}, 2);
-                Command c = new Command(13, 12, "panino salsiccia", new String[]{"cipolle", "pomodori"}, 1);
+                Command c = new Command(13, 12, "arrosticini", new String[]{"cipolle", "pomodori"}, 1);
                 activesAdapter.putCommand(a);
                 activesAdapter.putCommand(b);
                 activesAdapter.putCommand(c);
@@ -118,7 +118,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frag_container, frag);
         transaction.commit();
-        //force transaction execution to avoid null pointer exception
+        //force transaction execution
         getSupportFragmentManager().executePendingTransactions();
     }
 
