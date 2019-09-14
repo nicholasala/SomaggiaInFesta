@@ -63,6 +63,11 @@ public class MenuElAdapter extends RecyclerView.Adapter<MenuElAdapter.MenuElView
         return elements;
     }
 
+    public void clear(){
+        elements.clear();
+        notifyDataSetChanged();
+    }
+
     //ViewHolder
     public class MenuElViewHolder extends RecyclerView.ViewHolder{
         private TextView name;

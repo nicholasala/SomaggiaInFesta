@@ -29,6 +29,14 @@ import com.example.somaggiainfesta.fragments.ActiveCommandsFragment;
 import com.example.somaggiainfesta.fragments.SettingsFragment;
 import com.example.somaggiainfesta.fragments.StaticCommandsFragment;
 import com.example.somaggiainfesta.network.KitchenNetOrchestrator;
+import com.example.somaggiainfesta.network.MessageConverter;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Kitchen extends RestaurantModule implements SwipeController.RecyclerItemTouchHelperListener{
     private TextView infoText;
@@ -42,6 +50,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
     private RecyclerView namesRecycler;
     private RecyclerView addsRecycler;
     private KitchenNetOrchestrator netManager;
+    private final String menuFile = "menu.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +72,15 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                 break;
             case NOTFOUND:
                 //network setting
-                //android.provider.Settings.System.putInt(getContentResolver(), Settings.System.WIFI_USE_STATIC_IP, 1);
-                //android.provider.Settings.System.putString(getContentResolver(), Settings.System.WIFI_STATIC_IP, Keys.ip.kitchen_string);
-                //Toast.makeText(this, "Ip:"+android.provider.Settings.System.commandToString(getContentResolver(), Settings.System.WIFI_STATIC_IP), Toast.LENGTH_SHORT).show();
+                //TODO
+//                android.provider.Settings.System.putInt(getContentResolver(), Settings.System.WIFI_USE_STATIC_IP, 1);
+//                android.provider.Settings.System.putString(getContentResolver(), Settings.System.WIFI_STATIC_IP, Keys.ip.kitchen_string);
+//
+//                try {
+//                    Toast.makeText(this, "Ip:"+ Settings.System.getInt(getContentResolver(), Settings.System.WIFI_STATIC_IP), Toast.LENGTH_SHORT).show();
+//                } catch (Settings.SettingNotFoundException e) {
+//                    e.printStackTrace();
+//                }
 
                 //ui setting
                 setContentView(R.layout.activity_kitchen);
@@ -94,6 +109,8 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                                 //setup buttons
                                 ImageView addFood = (ImageView)findViewById(R.id.add_food_icon);
                                 ImageView addAdd = (ImageView)findViewById(R.id.add_add_icon);
+                                ImageView save = (ImageView)findViewById(R.id.save_icon);
+                                ImageView load = (ImageView)findViewById(R.id.load_icon);
 
                                 addFood.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -116,13 +133,14 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                                                 .show();
                                     }
                                 });
+
                                 addAdd.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         final EditText editText = new EditText(Kitchen.this);
 
                                         new AlertDialog.Builder(Kitchen.this)
-                                                .setTitle("Nome del'aggiunta:")
+                                                .setTitle("Nome dell'aggiunta:")
                                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
@@ -137,6 +155,70 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                                                 .show();
                                     }
                                 });
+
+                                save.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        final Menu m = Kitchen.this.getMenu();
+                                        if(m.isValid()){
+                                            new AlertDialog.Builder(Kitchen.this)
+                                                    .setTitle("Salvare il menu realizzato ?")
+                                                    .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            MessageConverter cv = new MessageConverter();
+
+                                                            try {
+                                                                FileOutputStream fos = Kitchen.this.openFileOutput(menuFile, Kitchen.this.MODE_PRIVATE);
+                                                                fos.write(cv.menuToString(m).getBytes());
+                                                                fos.close();
+                                                                Toast.makeText(Kitchen.this, "Menu salvato", Toast.LENGTH_SHORT).show();
+                                                            } catch (IOException ioException) {
+                                                                Toast.makeText(Kitchen.this, "Errore nel salvataggio del menu", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    })
+                                                    .setNegativeButton("Annulla", null)
+                                                    .show();
+                                        }else{
+                                            Toast.makeText(Kitchen.this, "Menu non valido", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+
+                                load.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        try {
+                                            FileInputStream fis = Kitchen.this.openFileInput(menuFile);
+                                            InputStreamReader isr = new InputStreamReader(fis);
+                                            BufferedReader bufferedReader = new BufferedReader(isr);
+                                            StringBuilder sb = new StringBuilder();
+                                            String line;
+                                            while ((line = bufferedReader.readLine()) != null) {
+                                                sb.append(line);
+                                            }
+
+                                            MessageConverter cv = new MessageConverter();
+                                            Menu m = cv.stringToMenu(sb.toString());
+                                            namesAdapter.clear();
+                                            addsAdapter.clear();
+
+                                            for(String s : m.getNames())
+                                                namesAdapter.putElement(s);
+
+                                            for(String s : m.getAdds())
+                                                addsAdapter.putElement(s);
+
+                                            updateMenu();
+                                        } catch (FileNotFoundException fileNotFound) {
+                                            Toast.makeText(Kitchen.this, "Nessun menu salvato", Toast.LENGTH_SHORT).show();
+                                        } catch (IOException ioException) {
+                                            Toast.makeText(Kitchen.this, "Errore nel caricamento del menu", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+
                                 break;
                         }
                         return true;

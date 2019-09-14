@@ -75,12 +75,32 @@ public class MessageConverter {
 
         try {
             menu.put("code", Keys.MessageCode.menu);
-            menu.put("Names", names);
-            menu.put("Adds", adds);
+            menu.put("names", names);
+            menu.put("added", adds);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         return menu.toString();
+    }
+
+    public Menu stringToMenu(String s){
+        try {
+            JSONObject json = new JSONObject(s);
+            Menu m = new Menu();
+            JSONArray jNames = json.getJSONArray("names");
+            JSONArray jAdded = json.getJSONArray("added");
+
+            for(int i=0; i<jNames.length(); i++)
+                m.addFood(jNames.getString(i));
+
+            for(int i=0; i<jAdded.length(); i++)
+                m.addAdd(jAdded.getString(i));
+
+            return m;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -1,9 +1,15 @@
 package com.example.somaggiainfesta.network;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 
 import com.example.somaggiainfesta.RestaurantModule;
 import com.example.somaggiainfesta.data.Keys;
+
+import java.io.IOException;
+import java.net.InetAddress;
 
 public class KitchenFinder extends AsyncTask<Void, Void, Keys.kitchenState> {
 
@@ -28,14 +34,8 @@ public class KitchenFinder extends AsyncTask<Void, Void, Keys.kitchenState> {
 //                return Keys.kitchenState.NOTFOUND;
 //
 //        } catch (IOException e) {
-//            return null;
+//            return Keys.kitchenState.NETERR;
 //        }
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
         return Keys.kitchenState.NOTFOUND;
     }
