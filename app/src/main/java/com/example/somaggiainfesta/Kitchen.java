@@ -2,6 +2,7 @@ package com.example.somaggiainfesta;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -14,6 +15,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -72,181 +74,184 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                 break;
             case NOTFOUND:
                 //network setting
-                //TODO
-//                android.provider.Settings.System.putInt(getContentResolver(), Settings.System.WIFI_USE_STATIC_IP, 1);
-//                android.provider.Settings.System.putString(getContentResolver(), Settings.System.WIFI_STATIC_IP, Keys.ip.kitchen_string);
-//
-//                try {
-//                    Toast.makeText(this, "Ip:"+ Settings.System.getInt(getContentResolver(), Settings.System.WIFI_STATIC_IP), Toast.LENGTH_SHORT).show();
-//                } catch (Settings.SettingNotFoundException e) {
-//                    e.printStackTrace();
-//                }
-
-                //ui setting
-                setContentView(R.layout.activity_kitchen);
-                bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-                bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+                infoText.setText(R.string.waiting_ip_change);
+                final Button goButton = findViewById(R.id.retry);
+                goButton.setVisibility(View.VISIBLE);
+                goButton.setText("modifica");
+                goButton.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.action_actives:
-                                inflateFragment(ActiveCommandsFragment.newInstance());
-                                activeRecycler = (RecyclerView)findViewById(R.id.active_recycler);
-                                setupActivesRecyclerView();
-                                break;
-                            case R.id.action_served:
-                                inflateFragment(StaticCommandsFragment.newInstance());
-                                staticRecycler = (RecyclerView)findViewById(R.id.static_recycler);
-                                setupServedRecyclerView();
-                                break;
-                            case R.id.action_settings:
-                                inflateFragment(SettingsFragment.newInstance());
-                                namesRecycler = (RecyclerView)findViewById(R.id.names_recycler);
-                                addsRecycler = (RecyclerView)findViewById(R.id.adds_recycler);
-                                setupNamesRecyclerView();
-                                setupAddsRecyclerView();
-
-                                //setup buttons
-                                ImageView addFood = (ImageView)findViewById(R.id.add_food_icon);
-                                ImageView addAdd = (ImageView)findViewById(R.id.add_add_icon);
-                                ImageView save = (ImageView)findViewById(R.id.save_icon);
-                                ImageView load = (ImageView)findViewById(R.id.load_icon);
-
-                                addFood.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        final EditText editText = new EditText(Kitchen.this);
-
-                                        new AlertDialog.Builder(Kitchen.this)
-                                                .setTitle("Nome del piatto:")
-                                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        String name = editText.getText().toString();
-
-                                                        if(!name.equals("") && namesAdapter.putElement(name))
-                                                            updateMenu();
-                                                    }
-                                                })
-                                                .setNegativeButton(android.R.string.cancel, null)
-                                                .setView(editText)
-                                                .show();
-                                    }
-                                });
-
-                                addAdd.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        final EditText editText = new EditText(Kitchen.this);
-
-                                        new AlertDialog.Builder(Kitchen.this)
-                                                .setTitle("Nome dell'aggiunta:")
-                                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        String name = editText.getText().toString();
-
-                                                        if(!name.equals("") && addsAdapter.putElement(name))
-                                                            updateMenu();
-                                                    }
-                                                })
-                                                .setNegativeButton("Annulla", null)
-                                                .setView(editText)
-                                                .show();
-                                    }
-                                });
-
-                                save.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        final Menu m = Kitchen.this.getMenu();
-                                        if(m.isValid()){
-                                            new AlertDialog.Builder(Kitchen.this)
-                                                    .setTitle("Salvare il menu realizzato ?")
-                                                    .setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            MessageConverter cv = new MessageConverter();
-
-                                                            try {
-                                                                FileOutputStream fos = Kitchen.this.openFileOutput(menuFile, Kitchen.this.MODE_PRIVATE);
-                                                                fos.write(cv.menuToString(m).getBytes());
-                                                                fos.close();
-                                                                Toast.makeText(Kitchen.this, "Menu salvato", Toast.LENGTH_SHORT).show();
-                                                            } catch (IOException ioException) {
-                                                                Toast.makeText(Kitchen.this, "Errore nel salvataggio del menu", Toast.LENGTH_SHORT).show();
-                                                            }
-                                                        }
-                                                    })
-                                                    .setNegativeButton("Annulla", null)
-                                                    .show();
-                                        }else{
-                                            Toast.makeText(Kitchen.this, "Menu non valido", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-
-                                load.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        try {
-                                            FileInputStream fis = Kitchen.this.openFileInput(menuFile);
-                                            InputStreamReader isr = new InputStreamReader(fis);
-                                            BufferedReader bufferedReader = new BufferedReader(isr);
-                                            StringBuilder sb = new StringBuilder();
-                                            String line;
-                                            while ((line = bufferedReader.readLine()) != null) {
-                                                sb.append(line);
-                                            }
-
-                                            MessageConverter cv = new MessageConverter();
-                                            Menu m = cv.stringToMenu(sb.toString());
-                                            namesAdapter.clear();
-                                            addsAdapter.clear();
-
-                                            for(String s : m.getNames())
-                                                namesAdapter.putElement(s);
-
-                                            for(String s : m.getAdds())
-                                                addsAdapter.putElement(s);
-
-                                            updateMenu();
-                                        } catch (FileNotFoundException fileNotFound) {
-                                            Toast.makeText(Kitchen.this, "Nessun menu salvato", Toast.LENGTH_SHORT).show();
-                                        } catch (IOException ioException) {
-                                            Toast.makeText(Kitchen.this, "Errore nel caricamento del menu", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-
-                                break;
-                        }
-                        return true;
+                    public void onClick(View v) {
+                        startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                        goButton.setText("prosegui");
+                        goButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                setupUi();
+                            }
+                        });
                     }
                 });
 
-                //setup network connection
-                netManager = new KitchenNetOrchestrator(this);
-                //setup adapters
-                activesAdapter = new ActiveComAdapter();
-                servedAdapter = new StaticComAdapter();
-                namesAdapter = new MenuElAdapter();
-                addsAdapter = new MenuElAdapter();
-
-                //random data
-                Command a = new Command(13, "patatine", 12, new String[]{}, 3);
-                Command b = new Command(13, "panino salsiccia", 12, new String[]{"maionese", "ketchup"}, 2);
-                Command c = new Command(13, "arrosticini", 12, new String[]{"cipolle", "pomodori"}, 1);
-                activesAdapter.putCommand(a);
-                activesAdapter.putCommand(b);
-                activesAdapter.putCommand(c);
-
-                //setup manually first fragment
-                inflateFragment(ActiveCommandsFragment.newInstance());
-                activeRecycler = (RecyclerView)findViewById(R.id.active_recycler);
-                setupActivesRecyclerView();
                 break;
         }
+    }
+
+    private void setupUi(){
+        //ui setting
+        setContentView(R.layout.activity_kitchen);
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_actives:
+                        inflateFragment(ActiveCommandsFragment.newInstance());
+                        activeRecycler = (RecyclerView)findViewById(R.id.active_recycler);
+                        setupActivesRecyclerView();
+                        break;
+                    case R.id.action_served:
+                        inflateFragment(StaticCommandsFragment.newInstance());
+                        staticRecycler = (RecyclerView)findViewById(R.id.static_recycler);
+                        setupServedRecyclerView();
+                        break;
+                    case R.id.action_settings:
+                        inflateFragment(SettingsFragment.newInstance());
+                        namesRecycler = (RecyclerView)findViewById(R.id.names_recycler);
+                        addsRecycler = (RecyclerView)findViewById(R.id.adds_recycler);
+                        setupNamesRecyclerView();
+                        setupAddsRecyclerView();
+
+                        //setup buttons
+                        ImageView addFood = (ImageView)findViewById(R.id.add_food_icon);
+                        ImageView addAdd = (ImageView)findViewById(R.id.add_add_icon);
+                        ImageView save = (ImageView)findViewById(R.id.save_icon);
+                        ImageView load = (ImageView)findViewById(R.id.load_icon);
+
+                        addFood.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                final EditText editText = new EditText(Kitchen.this);
+
+                                new AlertDialog.Builder(Kitchen.this)
+                                        .setTitle("Nome del piatto:")
+                                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                String name = editText.getText().toString();
+
+                                                if(!name.equals("") && namesAdapter.putElement(name))
+                                                    updateMenu();
+                                            }
+                                        })
+                                        .setNegativeButton(android.R.string.cancel, null)
+                                        .setView(editText)
+                                        .show();
+                            }
+                        });
+
+                        addAdd.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                final EditText editText = new EditText(Kitchen.this);
+
+                                new AlertDialog.Builder(Kitchen.this)
+                                        .setTitle("Nome dell'aggiunta:")
+                                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                String name = editText.getText().toString();
+
+                                                if(!name.equals("") && addsAdapter.putElement(name))
+                                                    updateMenu();
+                                            }
+                                        })
+                                        .setNegativeButton("Annulla", null)
+                                        .setView(editText)
+                                        .show();
+                            }
+                        });
+
+                        save.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                final Menu m = Kitchen.this.getMenu();
+                                if(m.isValid()){
+                                    new AlertDialog.Builder(Kitchen.this)
+                                            .setTitle("Salvare il menu realizzato ?")
+                                            .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    MessageConverter cv = new MessageConverter();
+
+                                                    try {
+                                                        FileOutputStream fos = Kitchen.this.openFileOutput(menuFile, Kitchen.this.MODE_PRIVATE);
+                                                        fos.write(cv.menuToString(m).getBytes());
+                                                        fos.close();
+                                                        Toast.makeText(Kitchen.this, "Menu salvato", Toast.LENGTH_SHORT).show();
+                                                    } catch (IOException ioException) {
+                                                        Toast.makeText(Kitchen.this, "Errore nel salvataggio del menu", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            })
+                                            .setNegativeButton("Annulla", null)
+                                            .show();
+                                }else{
+                                    Toast.makeText(Kitchen.this, "Menu non valido", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
+                        load.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                try {
+                                    FileInputStream fis = Kitchen.this.openFileInput(menuFile);
+                                    InputStreamReader isr = new InputStreamReader(fis);
+                                    BufferedReader bufferedReader = new BufferedReader(isr);
+                                    StringBuilder sb = new StringBuilder();
+                                    String line;
+                                    while ((line = bufferedReader.readLine()) != null) {
+                                        sb.append(line);
+                                    }
+
+                                    MessageConverter cv = new MessageConverter();
+                                    Menu m = cv.stringToMenu(sb.toString());
+                                    namesAdapter.clear();
+                                    addsAdapter.clear();
+
+                                    for(String s : m.getNames())
+                                        namesAdapter.putElement(s);
+
+                                    for(String s : m.getAdds())
+                                        addsAdapter.putElement(s);
+
+                                    updateMenu();
+                                } catch (FileNotFoundException fileNotFound) {
+                                    Toast.makeText(Kitchen.this, "Nessun menu salvato", Toast.LENGTH_SHORT).show();
+                                } catch (IOException ioException) {
+                                    Toast.makeText(Kitchen.this, "Errore nel caricamento del menu", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
+                        break;
+                }
+                return true;
+            }
+        });
+
+        //setup network connection
+        netManager = new KitchenNetOrchestrator(this);
+        //setup adapters
+        activesAdapter = new ActiveComAdapter();
+        servedAdapter = new StaticComAdapter();
+        namesAdapter = new MenuElAdapter();
+        addsAdapter = new MenuElAdapter();
+
+        //setup manually first fragment
+        inflateFragment(ActiveCommandsFragment.newInstance());
+        activeRecycler = (RecyclerView)findViewById(R.id.active_recycler);
+        setupActivesRecyclerView();
     }
 
     private void setupActivesRecyclerView(){
