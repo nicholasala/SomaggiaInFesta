@@ -1,12 +1,14 @@
 package com.example.somaggiainfesta.network;
 
 import com.example.somaggiainfesta.data.Command;
+import com.example.somaggiainfesta.data.Keys;
+import com.example.somaggiainfesta.data.Menu;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-//tool for convert commands between json and Command class
+//tool for convert commands between json - Command - Menu
 public class MessageConverter {
 
     public Command stringToCommand(String s){
@@ -32,6 +34,7 @@ public class MessageConverter {
         JSONArray added = new JSONArray();
 
         try {
+            converted.put("code", Keys.MessageCode.command);
             converted.put("id", c.getId());
             converted.put("name", c.getName());
 
@@ -50,11 +53,34 @@ public class MessageConverter {
         JSONObject converted = new JSONObject();
 
         try {
+            converted.put("code", Keys.MessageCode.confirmCommand);
             converted.put("id", c.getId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         return converted.toString();
+    }
+
+    public String menuToString(Menu m){
+        JSONObject menu = new JSONObject();
+        JSONArray names = new JSONArray();
+        JSONArray adds = new JSONArray();
+
+        for(String s : m.getNames())
+            names.put(s);
+
+        for(String s : m.getAdds())
+            adds.put(s);
+
+        try {
+            menu.put("code", Keys.MessageCode.menu);
+            menu.put("Names", names);
+            menu.put("Adds", adds);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return menu.toString();
     }
 }

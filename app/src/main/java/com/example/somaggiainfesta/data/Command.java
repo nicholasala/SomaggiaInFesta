@@ -33,6 +33,13 @@ public class Command {
         this.number = number;
     }
 
+    public Command(int id, String name, String[] added, int number) {
+        this.id = id;
+        this.name = name;
+        this.added = added;
+        this.number = number;
+    }
+
     public int getId() {
         return id;
     }

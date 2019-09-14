@@ -9,4 +9,5 @@
     <color name="colorIcons">#FFFFFF</color>
     <color name="colorDivider">#BDBDBD</color>
     <color name="colorOk">#388E3C</color>
+    <color name="colorError">#B00020</color>
 </resources>

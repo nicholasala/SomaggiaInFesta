@@ -17,4 +17,10 @@ public class Keys {
         ACTIVE,
         STATIC;
     }
+
+    public static class MessageCode{
+        public static final int menu = 1;
+        public static final int command = 2;
+        public static final int confirmCommand = 3;
+    }
 }

@@ -16,13 +16,15 @@
         android:background="@color/colorOk">
 
         <ImageView
-        android:id="@+id/active_done_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="20dp"
-        android:src="@drawable/ic_action_done" />
+            android:id="@+id/active_done_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:src="@drawable/ic_action_done"/>
 
     </RelativeLayout>
 
