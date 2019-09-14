@@ -49,13 +49,14 @@ public class MenuElAdapter extends RecyclerView.Adapter<MenuElAdapter.MenuElView
         return -1;
     }
 
-    public void putElement(String el){
+    public boolean putElement(String el){
         for(String s : elements)
             if(s.equals(el))
-                return;
+                return false;
 
         elements.add(el);
         notifyItemInserted(elements.size() - 1);
+        return true;
     }
 
     public List<String> getElements(){

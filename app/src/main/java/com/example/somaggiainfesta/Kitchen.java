@@ -107,17 +107,13 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         String name = editText.getText().toString();
 
-                                                        if(!name.equals(""))
-                                                            namesAdapter.putElement(name);
+                                                        if(!name.equals("") && namesAdapter.putElement(name))
+                                                            updateMenu();
                                                     }
                                                 })
                                                 .setNegativeButton(android.R.string.cancel, null)
                                                 .setView(editText)
                                                 .show();
-
-                                        //update menu over the network
-                                        netManager.broadcastMenu();
-                                        Toast.makeText(Kitchen.this, "Menu inoltrato", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                                 addAdd.setOnClickListener(new View.OnClickListener() {
@@ -132,17 +128,13 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         String name = editText.getText().toString();
 
-                                                        if(!name.equals(""))
-                                                            addsAdapter.putElement(name);
+                                                        if(!name.equals("") && addsAdapter.putElement(name))
+                                                            updateMenu();
                                                     }
                                                 })
                                                 .setNegativeButton("Annulla", null)
                                                 .setView(editText)
                                                 .show();
-
-                                        //update menu over the network
-                                        netManager.broadcastMenu();
-                                        Toast.makeText(Kitchen.this, "Menu inoltrato", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                                 break;
@@ -252,18 +244,24 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                     public void onClick(DialogInterface dialog, int which) {
                         if(recyclerId == R.id.names_recycler){
                             int index = namesAdapter.indexOf(toRemove);
-                            if(index != -1)
+                            if(index != -1){
                                 namesAdapter.removeElement(index);
+                                updateMenu();
+                            }
                         }else if(recyclerId == R.id.adds_recycler){
                             int index = addsAdapter.indexOf(toRemove);
-                            if(index != -1)
+                            if(index != -1){
                                 addsAdapter.removeElement(index);
+                                updateMenu();
+                            }
                         }
                     }
                 })
                 .setNegativeButton("Annulla", null)
                 .show();
+    }
 
+    public void updateMenu(){
         //update menu over the network
         netManager.broadcastMenu();
         Toast.makeText(this, "Menu inoltrato", Toast.LENGTH_SHORT).show();

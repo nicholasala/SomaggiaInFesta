@@ -57,9 +57,9 @@ public class KitchenNetOrchestrator extends WebSocketListener {
     }
 
     public void broadcastMenu(){
-        Menu m = context.getMenu();
+        String menu = cv.menuToString(context.getMenu());
 
         for(int i=0; i<cashdesks.size(); i++)
-            cashdesks.get(cashdesks.keyAt(i)).send(cv.menuToString(m));
+            cashdesks.get(cashdesks.keyAt(i)).send(menu);
     }
 }
