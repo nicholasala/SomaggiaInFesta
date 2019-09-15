@@ -12,17 +12,19 @@ public class Command {
         this.name = name;
     }
 
-    public Command(int id, String name, int cashdesk) {
-        this.id = id;
-        this.cashdesk = cashdesk;
-        this.name = name;
-    }
-
     public Command(int id, String name, int cashdesk, String[] added) {
         this.id = id;
         this.cashdesk = cashdesk;
         this.name = name;
         this.added = added;
+    }
+
+    public Command(int id, String name, int cashdesk, int number) {
+        this.id = id;
+        this.cashdesk = cashdesk;
+        this.name = name;
+        this.number = number;
+        this.added = new String[]{};
     }
 
     public Command(int id, String name, int cashdesk, String[] added, int number) {

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -81,7 +82,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                 goButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                        startActivityForResult(new Intent(Settings.ACTION_WIFI_IP_SETTINGS), 0);
                         goButton.setText("prosegui");
                         goButton.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -247,6 +248,11 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         servedAdapter = new StaticComAdapter();
         namesAdapter = new MenuElAdapter();
         addsAdapter = new MenuElAdapter();
+
+        ///////////////////////////
+        activesAdapter.putCommand(new Command(1, "Panino salsiccia", 12, new String[]{"maionese", "ketchup"}, 3));
+        activesAdapter.putCommand(new Command(1, "Arrosticini", 12, new String[]{"pomodori", "cipolle"}, 3));
+        activesAdapter.putCommand(new Command(1, "Patatine", 12, 3));
 
         //setup manually first fragment
         inflateFragment(ActiveCommandsFragment.newInstance());
