@@ -9,15 +9,20 @@ import android.view.ViewGroup;
 import com.example.somaggiainfesta.R;
 
 public class StaticCommandsFragment extends Fragment {
+    private boolean fab;
 
-    public static StaticCommandsFragment newInstance(){
+    public static StaticCommandsFragment newInstance(boolean fab){
         StaticCommandsFragment fragment = new StaticCommandsFragment();
+        fragment.fab = fab;
         return fragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
-        return inflater.inflate(R.layout.fragment_static_commands, container, false);
+        if(!this.fab)
+            return inflater.inflate(R.layout.fragment_static_commands, container, false);
+        else
+            return inflater.inflate(R.layout.fragment_static_commands_fab, container, false);
     }
 }

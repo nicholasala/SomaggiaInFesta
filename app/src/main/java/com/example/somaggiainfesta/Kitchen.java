@@ -49,7 +49,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
     private MenuElAdapter namesAdapter;
     private MenuElAdapter addsAdapter;
     private RecyclerView activeRecycler;
-    private RecyclerView staticRecycler;
+    private RecyclerView servedRecycler;
     private RecyclerView namesRecycler;
     private RecyclerView addsRecycler;
     private KitchenNetOrchestrator netManager;
@@ -111,8 +111,8 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                         setupActivesRecyclerView();
                         break;
                     case R.id.action_served:
-                        inflateFragment(StaticCommandsFragment.newInstance());
-                        staticRecycler = (RecyclerView)findViewById(R.id.static_recycler);
+                        inflateFragment(StaticCommandsFragment.newInstance(false));
+                        servedRecycler = (RecyclerView)findViewById(R.id.static_recycler);
                         setupServedRecyclerView();
                         break;
                     case R.id.action_settings:
@@ -272,9 +272,9 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
     }
 
     private void setupServedRecyclerView(){
-        staticRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        staticRecycler.setItemAnimator(new DefaultItemAnimator());
-        staticRecycler.setAdapter(servedAdapter);
+        servedRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        servedRecycler.setItemAnimator(new DefaultItemAnimator());
+        servedRecycler.setAdapter(servedAdapter);
     }
 
     private void setupNamesRecyclerView(){

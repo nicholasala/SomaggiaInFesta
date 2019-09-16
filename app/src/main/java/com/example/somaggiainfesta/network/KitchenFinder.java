@@ -37,7 +37,7 @@ public class KitchenFinder extends AsyncTask<Void, Void, Keys.kitchenState> {
 //            return Keys.kitchenState.NETERR;
 //        }
 
-        return Keys.kitchenState.NOTFOUND;
+        return Keys.kitchenState.FOUND;
     }
 
     @Override

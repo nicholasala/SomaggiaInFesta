@@ -24,7 +24,7 @@
         android:layout_alignParentBottom="true"
         android:layout_toEndOf="@id/frag_container"
         android:layout_toRightOf="@id/frag_container"
-        app:menu="@menu/bottom_nav_menu"
+        app:menu="@menu/bottom_navmenu"
         app:itemBackground="@color/colorPrimary"
         app:itemIconTint="@drawable/bottom_nav_icon_color_selector"
         app:itemTextColor="@drawable/bottom_nav_icon_color_selector" />
