@@ -5,4 +5,5 @@
     <string name="not_founded_kitchen">Impossibile trovare una cucina nella rete</string>
     <string name="network_error">Errore con la connessione alla rete</string>
     <string name="waiting_ip_change">Modifica dell\'indirizzo ip in "10.27.0.2" necessaria. Inseguito premere bottone prosegui.</string>
+    <string name="cucina">L\'ip del dispositivo appartiene a quello della cucina. Cambiare tale indirizzo per proseguire come cassa.</string>
 </resources>

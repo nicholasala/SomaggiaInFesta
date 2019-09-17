@@ -71,48 +71,54 @@ public class CashDesk extends RestaurantModule{
                 retryButton.setVisibility(View.VISIBLE);
                 break;
             case FOUND:
-                setContentView(R.layout.activity_cashdesk);
-                BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-                bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.action_actives:
-                                inflateFragment(StaticCommandsFragment.newInstance(true));
-                                activeRecycler = (RecyclerView)findViewById(R.id.static_recycler);
-                                setupActivesRecyclerView();
-                                setupFAB();
-                                break;
-                            case R.id.action_served:
-                                inflateFragment(StaticCommandsFragment.newInstance(false));
-                                servedRecycler = (RecyclerView)findViewById(R.id.static_recycler);
-                                setupServedRecyclerView();
-                                break;
-                            case R.id.action_settings:
-                                Toast.makeText(CashDesk.this, "Da costruire", Toast.LENGTH_SHORT).show();
+                if(!isKitchen()){
+                    setContentView(R.layout.activity_cashdesk);
+                    BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+                    bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+                        @Override
+                        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.action_actives:
+                                    inflateFragment(StaticCommandsFragment.newInstance(true));
+                                    activeRecycler = (RecyclerView)findViewById(R.id.static_recycler);
+                                    setupActivesRecyclerView();
+                                    setupFAB();
+                                    break;
+                                case R.id.action_served:
+                                    inflateFragment(StaticCommandsFragment.newInstance(false));
+                                    servedRecycler = (RecyclerView)findViewById(R.id.static_recycler);
+                                    setupServedRecyclerView();
+                                    break;
+                                case R.id.action_settings:
+                                    Toast.makeText(CashDesk.this, "Da costruire", Toast.LENGTH_SHORT).show();
+                            }
+                            return true;
                         }
-                        return true;
-                    }
-                });
+                    });
 
-                //setup network connection and connect with kitchen
-                try {
-                    netManager = new CashDeskNetOrchestrator( new URI( Keys.ip.kitchen_url + ":" + Keys.ip.ws_port ), this);
-                    netManager.connect();
-                } catch (URISyntaxException e) {
-                    Toast.makeText(CashDesk.this, "Errore con la connessione alla cucina", Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
+                    //setup network connection and connect with kitchen
+                    try {
+                        netManager = new CashDeskNetOrchestrator( new URI( Keys.ip.kitchen_url + ":" + Keys.ip.ws_port ), this);
+                        netManager.connect();
+                    } catch (URISyntaxException e) {
+                        Toast.makeText(CashDesk.this, "Errore con la connessione alla cucina", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+
+                    //setup adapters
+                    activesAdapter = new StaticComAdapter();
+                    servedAdapter = new StaticComAdapter();
+
+                    //setup manually first fragment
+                    inflateFragment(StaticCommandsFragment.newInstance(true));
+                    activeRecycler = (RecyclerView)findViewById(R.id.static_recycler);
+                    setupActivesRecyclerView();
+                    setupFAB();
+                }else{
+                    infoText.setText(R.string.cucina);
+                    retryButton.setVisibility(View.VISIBLE);
                 }
 
-                //setup adapters
-                activesAdapter = new StaticComAdapter();
-                servedAdapter = new StaticComAdapter();
-
-                //setup manually first fragment
-                inflateFragment(StaticCommandsFragment.newInstance(true));
-                activeRecycler = (RecyclerView)findViewById(R.id.static_recycler);
-                setupActivesRecyclerView();
-                setupFAB();
                 break;
             case NOTFOUND:
                 infoText.setText(R.string.not_founded_kitchen);
@@ -140,7 +146,10 @@ public class CashDesk extends RestaurantModule{
             public void onClick(View view) {
 
                 ///////
-                netManager.sendCommand(new Command(1, "Panino", new String[]{"maionese", "Ketchup"}, 2));
+                if(netManager.isOpen())
+                    netManager.sendCommand(new Command(1, "Panino", new String[]{"maionese", "Ketchup"}, 2));
+                else
+                    Toast.makeText(CashDesk.this, "Connessione con la cucina interrotta", Toast.LENGTH_LONG).show();
 
                 if(menu != null && menu.isValid()){
                     inflateFragment(OrderFragment.newInstance());
@@ -188,7 +197,7 @@ public class CashDesk extends RestaurantModule{
     }
 
     public void onMenu(Menu m){
-        Log.v("CashDesk", "New menu");
+        Toast.makeText(CashDesk.this, "Menu ricevuto", Toast.LENGTH_LONG).show();
         this.menu = m;
     }
 }

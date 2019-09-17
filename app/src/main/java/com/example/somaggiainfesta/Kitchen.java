@@ -3,7 +3,6 @@ package com.example.somaggiainfesta;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -79,7 +78,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                 infoText.setText(R.string.network_error);
                 break;
             case FOUND:
-                if(checkIpAddress()){
+                if(isKitchen()){
                     setupKitchen();
                 }else{
                     infoText.setText(R.string.founded_kitchen);
@@ -366,14 +365,6 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         menu = getMenu();
         netManager.broadcastMenu();
         Toast.makeText(this, "Menu inoltrato", Toast.LENGTH_SHORT).show();
-    }
-
-    public boolean checkIpAddress(){
-        WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-        int ip = wm.getConnectionInfo().getIpAddress();
-        String sIp = String.format("%d.%d.%d.%d", (ip & 0xff), (ip >> 8 & 0xff), (ip >> 16 & 0xff), (ip >> 24 & 0xff));
-
-        return sIp.equals(Keys.ip.kitchen_string);
     }
 
     public void onCommand(Command c){

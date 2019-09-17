@@ -14,15 +14,13 @@ public class MessageConverter {
     public Command stringToCommand(String s){
         try {
             JSONObject json = new JSONObject(s);
-            Command converted = new Command(json.getInt("id"), json.getString("name"));
             JSONArray jAdded = json.getJSONArray("added");
 
             String[] sAdded = new String[jAdded.length()];
             for(int i=0; i<jAdded.length(); i++)
                 sAdded[i] = jAdded.getString(i);
 
-            converted.setAdded(sAdded);
-            return converted;
+            return new Command(json.getInt("id"), json.getString("name"), sAdded, json.getInt("number"));
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -37,6 +35,7 @@ public class MessageConverter {
             converted.put("code", Keys.MessageCode.command);
             converted.put("id", c.getId());
             converted.put("name", c.getName());
+            converted.put("number", c.getNumber());
 
             for(String s : c.getAdded())
                 added.put(s);

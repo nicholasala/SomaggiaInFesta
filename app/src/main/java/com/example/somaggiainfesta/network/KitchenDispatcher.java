@@ -23,7 +23,7 @@ public class KitchenDispatcher extends AsyncTask<Void, Void, Command> {
     protected Command doInBackground(Void... voids) {
         Command c = cv.stringToCommand(message);
         c.setCashdesk(cashDeskId);
-        return new Command(1, "Panino");
+        return c;
     }
 
     @Override
