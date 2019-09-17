@@ -103,4 +103,13 @@ public class MessageConverter {
             return null;
         }
     }
+
+    public int getId(String s){
+        try {
+            return new JSONObject(s).getInt("id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
 }

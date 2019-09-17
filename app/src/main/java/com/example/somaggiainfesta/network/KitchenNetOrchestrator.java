@@ -1,7 +1,6 @@
 package com.example.somaggiainfesta.network;
 
 import android.util.SparseArray;
-import android.widget.Toast;
 
 import com.example.somaggiainfesta.Kitchen;
 import com.example.somaggiainfesta.data.Command;
@@ -14,57 +13,48 @@ import org.java_websocket.server.WebSocketServer;
 
 
 public class KitchenNetOrchestrator extends WebSocketServer {
-    private SparseArray<WebSocket> cashdesks;
     private int ids = 0;
-    private MessageConverter cv;
     private Kitchen context;
+    private MessageConverter cv;
 
     public KitchenNetOrchestrator(InetSocketAddress address, Kitchen context) {
         super(address);
         this.context = context;
-        this.cashdesks = new SparseArray<>();
         this.cv = new MessageConverter();
     }
 
     @Override
-    public void onStart() {
-
-    }
+    public void onStart() { }
 
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake handshake) {
-        cashdesks.append(ids++, webSocket);
-        Menu m = context.getMenu();
+        Menu m = Kitchen.menu;
 
-        if(m.isValid())
+        if(m!= null && m.isValid())
             webSocket.send(cv.menuToString(m));
     }
 
     @Override
     public void onMessage(WebSocket webSocket, String text) {
-        new KitchenDispatcher(context, text).execute();
+        for(int i=0; i<getConnections().size(); i++)
+            if(webSocket.equals(getConnections().toArray()[i]))
+                new KitchenDispatcher(context, text, i).execute();
     }
 
     @Override
-    public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-
-    }
+    public void onClose(WebSocket conn, int code, String reason, boolean remote) { }
 
     @Override
-    public void onError(WebSocket conn, Exception ex) {
-
-    }
+    public void onError(WebSocket conn, Exception ex) { }
 
     public void confirmCommand(Command c){
-        WebSocket ws = cashdesks.get(c.getCashdesk());
-        if(ws != null && ws.isOpen())
-            ws.send(cv.commandToConfString(c));
+        try {
+            WebSocket client = (WebSocket) getConnections().toArray()[c.getId()];
+            client.send(cv.commandToConfString(c));
+        }catch (Exception e) {}
     }
 
     public void broadcastMenu(){
-        String menu = cv.menuToString(context.getMenu());
-
-        for(int i=0; i<cashdesks.size(); i++)
-            cashdesks.get(cashdesks.keyAt(i)).send(menu);
+        broadcast(cv.menuToString(Kitchen.menu));
     }
 }

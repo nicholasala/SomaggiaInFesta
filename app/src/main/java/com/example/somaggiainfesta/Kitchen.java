@@ -55,6 +55,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
     private RecyclerView addsRecycler;
     private KitchenNetOrchestrator netManager;
     private final String menuFile = "menu.json";
+    public static volatile Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -362,6 +363,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
 
     public void updateMenu(){
         //update menu over the network
+        menu = getMenu();
         netManager.broadcastMenu();
         Toast.makeText(this, "Menu inoltrato", Toast.LENGTH_SHORT).show();
     }

@@ -3,10 +3,10 @@ package com.example.somaggiainfesta.network;
 import android.widget.Toast;
 
 import com.example.somaggiainfesta.CashDesk;
+import com.example.somaggiainfesta.data.Command;
 import com.example.somaggiainfesta.data.Keys;
 
 import org.java_websocket.client.WebSocketClient;
-
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,18 +15,19 @@ import java.net.URI;
 
 
 public class CashDeskNetOrchestrator extends WebSocketClient {
-    private MessageConverter cv;
     private CashDesk context;
+    private MessageConverter cv;
 
     public CashDeskNetOrchestrator(URI serverUri, CashDesk context) {
         super(serverUri);
-        cv = new MessageConverter();
         this.context = context;
+        cv = new MessageConverter();
     }
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-        send("Buongiorno");
+        int a = 0;
+
     }
 
     @Override
@@ -36,9 +37,10 @@ public class CashDeskNetOrchestrator extends WebSocketClient {
 
             switch (code){
                 case Keys.MessageCode.menu:
-                    context.updateMenu(cv.stringToMenu(message));
+                    new MenuDispatcher(context, message);
                     break;
                 case Keys.MessageCode.confirmCommand:
+                    new ConfCmdDispatcher(context, message);
                     break;
             }
 
@@ -48,12 +50,12 @@ public class CashDeskNetOrchestrator extends WebSocketClient {
     }
 
     @Override
-    public void onClose(int code, String reason, boolean remote) {
-
-    }
+    public void onClose(int code, String reason, boolean remote) { }
 
     @Override
-    public void onError(Exception ex) {
-        Toast.makeText(context, "Error "+ex.toString(), Toast.LENGTH_LONG).show();
+    public void onError(Exception ex) { }
+
+    public void sendCommand(Command c){
+        send(cv.commandToString(c));
     }
 }

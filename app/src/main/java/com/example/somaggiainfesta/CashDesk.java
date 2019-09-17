@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.somaggiainfesta.adapters.StaticComAdapter;
+import com.example.somaggiainfesta.data.Command;
 import com.example.somaggiainfesta.data.Keys;
 import com.example.somaggiainfesta.data.Menu;
 import com.example.somaggiainfesta.fragments.OrderFragment;
@@ -136,6 +138,10 @@ public class CashDesk extends RestaurantModule{
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                ///////
+                netManager.sendCommand(new Command(1, "Panino", new String[]{"maionese", "Ketchup"}, 2));
+
                 if(menu != null && menu.isValid()){
                     inflateFragment(OrderFragment.newInstance());
                     setupOrderFragment();
@@ -177,7 +183,12 @@ public class CashDesk extends RestaurantModule{
         getSupportFragmentManager().executePendingTransactions();
     }
 
-    public void updateMenu(Menu m){
-        this.menu = menu;
+    public void onCommandConfirm(int id){
+        Toast.makeText(CashDesk.this, "comanda confermata" + id, Toast.LENGTH_LONG).show();
+    }
+
+    public void onMenu(Menu m){
+        Log.v("CashDesk", "New menu");
+        this.menu = m;
     }
 }
