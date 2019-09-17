@@ -11,6 +11,18 @@ import org.json.JSONObject;
 //tool for convert commands between json - Command - Menu
 public class MessageConverter {
 
+    public String getHandshakeText(){
+        try{
+            JSONObject message = new JSONObject();
+            message.put("code", Keys.MessageCode.handShake);
+            message.put("message", "Hello!");
+            return message.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public Command stringToCommand(String s){
         try {
             JSONObject json = new JSONObject(s);

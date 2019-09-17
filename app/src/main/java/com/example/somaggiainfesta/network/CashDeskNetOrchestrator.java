@@ -26,8 +26,7 @@ public class CashDeskNetOrchestrator extends WebSocketClient {
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-        int a = 0;
-
+        send(cv.getHandshakeText());
     }
 
     @Override
@@ -37,10 +36,10 @@ public class CashDeskNetOrchestrator extends WebSocketClient {
 
             switch (code){
                 case Keys.MessageCode.menu:
-                    new MenuDispatcher(context, message);
+                    new MenuDispatcher(context, message).execute();
                     break;
                 case Keys.MessageCode.confirmCommand:
-                    new ConfCmdDispatcher(context, message);
+                    new ConfCmdDispatcher(context, message).execute();
                     break;
             }
 

@@ -1,6 +1,7 @@
 package com.example.somaggiainfesta.network;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.example.somaggiainfesta.CashDesk;
 import com.example.somaggiainfesta.data.Command;
@@ -25,6 +26,8 @@ public class ConfCmdDispatcher extends AsyncTask<Void, Void, Command> {
     @Override
     protected void onPostExecute(Command c) {
         if(c.getId() != -1){
+            Log.v("CommandConf", String.valueOf(c.getId()));
+
             super.onPostExecute(c);
             context.onCommandConfirm(c.getId());
         }
