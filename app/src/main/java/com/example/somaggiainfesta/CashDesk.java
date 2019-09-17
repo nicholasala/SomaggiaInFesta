@@ -1,7 +1,5 @@
 package com.example.somaggiainfesta;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -14,26 +12,29 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.somaggiainfesta.adapters.StaticComAdapter;
-import com.example.somaggiainfesta.data.Command;
 import com.example.somaggiainfesta.data.Keys;
+import com.example.somaggiainfesta.data.Menu;
+import com.example.somaggiainfesta.fragments.OrderFragment;
 import com.example.somaggiainfesta.fragments.StaticCommandsFragment;
+import com.example.somaggiainfesta.network.CashDeskNetOrchestrator;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class CashDesk extends RestaurantModule{
     private TextView infoText;
     private Button retryButton;
-    private BottomNavigationView bottomNavigationView;
     private StaticComAdapter activesAdapter;
     private StaticComAdapter servedAdapter;
     private RecyclerView activeRecycler;
     private RecyclerView servedRecycler;
+    private CashDeskNetOrchestrator netManager;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,12 @@ public class CashDesk extends RestaurantModule{
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+
+    @Override
     public void onKitchenInfo(Keys.kitchenState state) {
         switch (state){
             case NETERR:
@@ -63,7 +70,7 @@ public class CashDesk extends RestaurantModule{
                 break;
             case FOUND:
                 setContentView(R.layout.activity_cashdesk);
-                bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+                BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
                 bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -79,10 +86,21 @@ public class CashDesk extends RestaurantModule{
                                 servedRecycler = (RecyclerView)findViewById(R.id.static_recycler);
                                 setupServedRecyclerView();
                                 break;
+                            case R.id.action_settings:
+                                Toast.makeText(CashDesk.this, "Da costruire", Toast.LENGTH_SHORT).show();
                         }
                         return true;
                     }
                 });
+
+                //setup network connection and connect with kitchen
+                try {
+                    netManager = new CashDeskNetOrchestrator( new URI( Keys.ip.kitchen_url + ":" + Keys.ip.ws_port ), this);
+                    netManager.connect();
+                } catch (URISyntaxException e) {
+                    Toast.makeText(CashDesk.this, "Errore con la connessione alla cucina", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
 
                 //setup adapters
                 activesAdapter = new StaticComAdapter();
@@ -118,30 +136,35 @@ public class CashDesk extends RestaurantModule{
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final EditText editText = new EditText(CashDesk.this);
-                final Spinner s = new Spinner(CashDesk.this);
-                List<String> varSpinnerData;
-                List<String> myArraySpinner = new ArrayList<String>();
+                if(menu != null && menu.isValid()){
+                    inflateFragment(OrderFragment.newInstance());
+                    setupOrderFragment();
+                }else{
+                    Toast.makeText(CashDesk.this, "Menu non disponibile", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
 
-                myArraySpinner.add("red");
-                myArraySpinner.add("green");
-                myArraySpinner.add("blue");
+    private void setupOrderFragment(){
+        ImageView add = (ImageView)findViewById(R.id.increment_food_icon);
+        ImageView remove = (ImageView)findViewById(R.id.decrement_food_icon);
 
-                varSpinnerData = myArraySpinner;
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView number = (TextView) findViewById(R.id.order_number);
+                number.setText(String.valueOf(Integer.valueOf(number.getText().toString()) + 1));
+            }
+        });
 
-                new AlertDialog.Builder(CashDesk.this)
-                        .setTitle("Nome del piatto:")
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String name = editText.getText().toString();
-
-                            }
-                        })
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .setView(editText)
-                        .setView(s)
-                        .show();
+        remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView number = (TextView) findViewById(R.id.order_number);
+                int value = Integer.valueOf(number.getText().toString());
+                if(value > 1)
+                    number.setText(String.valueOf(value - 1));
             }
         });
     }
@@ -152,5 +175,9 @@ public class CashDesk extends RestaurantModule{
         transaction.commit();
         //force transaction execution
         getSupportFragmentManager().executePendingTransactions();
+    }
+
+    public void updateMenu(Menu m){
+        this.menu = menu;
     }
 }

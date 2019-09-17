@@ -1,31 +1,38 @@
 package com.example.somaggiainfesta.network;
 
 import android.util.SparseArray;
+import android.widget.Toast;
 
 import com.example.somaggiainfesta.Kitchen;
 import com.example.somaggiainfesta.data.Command;
 import com.example.somaggiainfesta.data.Menu;
 
-import org.jetbrains.annotations.NotNull;
+import java.net.InetSocketAddress;
+import org.java_websocket.WebSocket;
+import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.server.WebSocketServer;
 
-import okhttp3.Response;
-import okhttp3.WebSocket;
-import okhttp3.WebSocketListener;
 
-public class KitchenNetOrchestrator extends WebSocketListener {
+public class KitchenNetOrchestrator extends WebSocketServer {
     private SparseArray<WebSocket> cashdesks;
     private int ids = 0;
     private MessageConverter cv;
     private Kitchen context;
 
-    public KitchenNetOrchestrator(Kitchen context) {
+    public KitchenNetOrchestrator(InetSocketAddress address, Kitchen context) {
+        super(address);
         this.context = context;
         this.cashdesks = new SparseArray<>();
         this.cv = new MessageConverter();
     }
 
     @Override
-    public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
+    public void onStart() {
+
+    }
+
+    @Override
+    public void onOpen(WebSocket webSocket, ClientHandshake handshake) {
         cashdesks.append(ids++, webSocket);
         Menu m = context.getMenu();
 
@@ -34,25 +41,23 @@ public class KitchenNetOrchestrator extends WebSocketListener {
     }
 
     @Override
-    public void onMessage(@NotNull WebSocket webSocket, @NotNull String text) {
-        Command c = cv.stringToCommand(text);
+    public void onMessage(WebSocket webSocket, String text) {
+        new KitchenDispatcher(context, text).execute();
+    }
 
-        //TODO verificare metodo migliore, se il seguente non funziona è possibile fare uno sparseArray con stringhe invece che con l'Oggetto ws
-        //TODO vanno probabilmente aggiunti dei controlli
-        c.setCashdesk(cashdesks.keyAt(cashdesks.indexOfValue(webSocket)));
-        context.addCommand(c);
+    @Override
+    public void onClose(WebSocket conn, int code, String reason, boolean remote) {
 
-//        for(int i=0; i< cashdesks.size(); i++){
-//            if(webSocket.request().url().host().equals(cashdesks.get(cashdesks.keyAt(i)).request().url().host())){
-//                c.setId(cashdesks.keyAt(i));
-//                context.addCommand(c);
-//            }
-//        }
+    }
+
+    @Override
+    public void onError(WebSocket conn, Exception ex) {
+
     }
 
     public void confirmCommand(Command c){
         WebSocket ws = cashdesks.get(c.getCashdesk());
-        if(ws != null)
+        if(ws != null && ws.isOpen())
             ws.send(cv.commandToConfString(c));
     }
 

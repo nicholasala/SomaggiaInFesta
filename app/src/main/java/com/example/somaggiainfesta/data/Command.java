@@ -10,6 +10,7 @@ public class Command {
     public Command(int id, String name) {
         this.id = id;
         this.name = name;
+        this.added = new String[]{};
     }
 
     public Command(int id, String name, int cashdesk, String[] added) {

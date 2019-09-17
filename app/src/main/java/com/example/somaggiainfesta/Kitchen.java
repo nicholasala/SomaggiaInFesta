@@ -3,6 +3,7 @@ package com.example.somaggiainfesta;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -40,10 +41,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
 
 public class Kitchen extends RestaurantModule implements SwipeController.RecyclerItemTouchHelperListener{
     private TextView infoText;
-    private BottomNavigationView bottomNavigationView;
     private ActiveComAdapter activesAdapter;
     private StaticComAdapter servedAdapter;
     private MenuElAdapter namesAdapter;
@@ -65,19 +66,31 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
     }
 
     @Override
+    protected void onDestroy() {
+        //TODO stop del server ?
+        super.onDestroy();
+    }
+
+    @Override
     public void onKitchenInfo(Keys.kitchenState state) {
         switch (state){
             case NETERR:
                 infoText.setText(R.string.network_error);
                 break;
             case FOUND:
-                infoText.setText(R.string.founded_kitchen);
+                if(checkIpAddress()){
+                    setupKitchen();
+                }else{
+                    infoText.setText(R.string.founded_kitchen);
+                }
+
                 break;
             case NOTFOUND:
                 //network setting
                 infoText.setText(R.string.waiting_ip_change);
                 final Button goButton = findViewById(R.id.retry);
                 goButton.setVisibility(View.VISIBLE);
+
                 goButton.setText("modifica");
                 goButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -87,7 +100,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                         goButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                setupUi();
+                                setupKitchen();
                             }
                         });
                     }
@@ -97,10 +110,10 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         }
     }
 
-    private void setupUi(){
+    private void setupKitchen(){
         //ui setting
         setContentView(R.layout.activity_kitchen);
-        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -241,18 +254,15 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
             }
         });
 
-        //setup network connection
-        netManager = new KitchenNetOrchestrator(this);
+        //setup network connection and start kitchen server
+        netManager = new KitchenNetOrchestrator(new InetSocketAddress(Keys.ip.kitchen_string, Keys.ip.ws_port), this);
+        netManager.start();
+
         //setup adapters
         activesAdapter = new ActiveComAdapter();
         servedAdapter = new StaticComAdapter();
         namesAdapter = new MenuElAdapter();
         addsAdapter = new MenuElAdapter();
-
-        ///////////////////////////
-        activesAdapter.putCommand(new Command(1, "Panino salsiccia", 12, new String[]{"maionese", "ketchup"}, 3));
-        activesAdapter.putCommand(new Command(1, "Arrosticini", 12, new String[]{"pomodori", "cipolle"}, 3));
-        activesAdapter.putCommand(new Command(1, "Patatine", 12, 3));
 
         //setup manually first fragment
         inflateFragment(ActiveCommandsFragment.newInstance());
@@ -309,10 +319,6 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         Toast.makeText(this, "Comanda confermata", Toast.LENGTH_SHORT).show();
     }
 
-    public void addCommand(Command c){
-        activesAdapter.putCommand(c);
-    }
-
     public Menu getMenu(){
         Menu m = new Menu();
 
@@ -358,5 +364,17 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         //update menu over the network
         netManager.broadcastMenu();
         Toast.makeText(this, "Menu inoltrato", Toast.LENGTH_SHORT).show();
+    }
+
+    public boolean checkIpAddress(){
+        WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+        int ip = wm.getConnectionInfo().getIpAddress();
+        String sIp = String.format("%d.%d.%d.%d", (ip & 0xff), (ip >> 8 & 0xff), (ip >> 16 & 0xff), (ip >> 24 & 0xff));
+
+        return sIp.equals(Keys.ip.kitchen_string);
+    }
+
+    public void onCommand(Command c){
+        activesAdapter.putCommand(c);
     }
 }

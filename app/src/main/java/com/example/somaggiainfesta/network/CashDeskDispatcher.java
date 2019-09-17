@@ -11,11 +11,11 @@ import com.example.somaggiainfesta.data.Keys;
 import java.io.IOException;
 import java.net.InetAddress;
 
-public class KitchenFinder extends AsyncTask<Void, Void, Keys.kitchenState> {
+public class CashDeskDispatcher extends AsyncTask<Void, Void, Keys.kitchenState> {
 
     private RestaurantModule context;
 
-    public KitchenFinder(RestaurantModule context){
+    public CashDeskDispatcher(RestaurantModule context){
         this.context = context;
     }
 
