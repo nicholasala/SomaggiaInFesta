@@ -1,7 +1,5 @@
 package com.example.somaggiainfesta.network;
 
-import android.util.SparseArray;
-
 import com.example.somaggiainfesta.Kitchen;
 import com.example.somaggiainfesta.data.Command;
 import com.example.somaggiainfesta.data.Keys;
@@ -9,7 +7,6 @@ import com.example.somaggiainfesta.data.Menu;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -31,7 +28,9 @@ public class KitchenNetOrchestrator extends WebSocketServer {
     }
 
     @Override
-    public void onStart() { }
+    public void onStart() {
+        setConnectionLostTimeout(Keys.ConstValues.conLostTimeout);
+    }
 
     @Override
     public void onOpen(WebSocket webSocket, ClientHandshake handshake) {
@@ -69,7 +68,8 @@ public class KitchenNetOrchestrator extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        binder.remove(conn.getRemoteSocketAddress().getAddress().getHostAddress());
+        if(binder.contains(conn.getRemoteSocketAddress().getAddress().getHostAddress()))
+            binder.remove(conn.getRemoteSocketAddress().getAddress().getHostAddress());
     }
 
     @Override

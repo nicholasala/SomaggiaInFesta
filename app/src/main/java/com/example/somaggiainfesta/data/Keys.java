@@ -15,9 +15,12 @@ public class Keys {
         NETERR;
     }
 
-    public enum CommandState{
-        ACTIVE,
-        STATIC;
+    public static class ConstValues{
+        public static final int conLostTimeout = 72000;
+    }
+
+    public static class MessageText{
+        public static final String close= "End of cashdesk service";
     }
 
     public static class MessageCode{
@@ -25,5 +28,6 @@ public class Keys {
         public static final int menu = 1;
         public static final int command = 2;
         public static final int confirmCommand = 3;
+        public static final int close = 4;
     }
 }

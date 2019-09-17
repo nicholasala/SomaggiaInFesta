@@ -58,6 +58,8 @@ public class CashDesk extends RestaurantModule{
 
     @Override
     protected void onDestroy() {
+        netManager.closeConnection(Keys.MessageCode.close, Keys.MessageText.close);
+        netManager.close();
         super.onDestroy();
     }
 
