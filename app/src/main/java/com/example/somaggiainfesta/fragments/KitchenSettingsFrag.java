@@ -8,16 +8,16 @@ import android.view.ViewGroup;
 
 import com.example.somaggiainfesta.R;
 
-public class SettingsFragment extends Fragment {
+public class KitchenSettingsFrag extends Fragment {
 
-    public static SettingsFragment newInstance(){
-        SettingsFragment fragment = new SettingsFragment();
+    public static KitchenSettingsFrag newInstance(){
+        KitchenSettingsFrag fragment = new KitchenSettingsFrag();
         return fragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        return inflater.inflate(R.layout.fragment_kitchen_settings, container, false);
     }
 }

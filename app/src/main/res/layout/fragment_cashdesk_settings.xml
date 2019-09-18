@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:text="Informazioni cassa:"
+        android:textStyle="italic"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:padding="8dp"
+        android:textColor="@color/colorSecondaryText"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"/>
+
+    <TextView
+        android:id="@+id/settings_ip"
+        android:text="ip"
+        android:textSize="24sp"
+        android:padding="8dp"
+        android:textColor="@color/colorPrimaryText"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"/>
+
+    <TextView
+        android:id="@+id/settings_served"
+        android:text="Servite"
+        android:textSize="24sp"
+        android:padding="8dp"
+        android:textColor="@color/colorPrimaryText"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"/>
+
+    <TextView
+        android:id="@+id/settings_actives"
+        android:text="Attive"
+        android:textSize="24sp"
+        android:padding="8dp"
+        android:textColor="@color/colorPrimaryText"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"/>
+
+</LinearLayout>

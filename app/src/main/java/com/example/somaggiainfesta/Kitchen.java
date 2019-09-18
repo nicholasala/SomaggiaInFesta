@@ -29,7 +29,7 @@ import com.example.somaggiainfesta.data.Command;
 import com.example.somaggiainfesta.data.Keys;
 import com.example.somaggiainfesta.data.Menu;
 import com.example.somaggiainfesta.fragments.ActiveCommandsFragment;
-import com.example.somaggiainfesta.fragments.SettingsFragment;
+import com.example.somaggiainfesta.fragments.KitchenSettingsFrag;
 import com.example.somaggiainfesta.fragments.StaticCommandsFragment;
 import com.example.somaggiainfesta.network.KitchenNetOrchestrator;
 import com.example.somaggiainfesta.network.MessageConverter;
@@ -133,7 +133,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                         setupServedRecyclerView();
                         break;
                     case R.id.action_settings:
-                        inflateFragment(SettingsFragment.newInstance());
+                        inflateFragment(KitchenSettingsFrag.newInstance());
                         namesRecycler = (RecyclerView)findViewById(R.id.names_recycler);
                         addsRecycler = (RecyclerView)findViewById(R.id.adds_recycler);
                         setupNamesRecyclerView();

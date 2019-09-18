@@ -25,6 +25,7 @@ import com.example.somaggiainfesta.adapters.StaticComAdapter;
 import com.example.somaggiainfesta.data.Command;
 import com.example.somaggiainfesta.data.Keys;
 import com.example.somaggiainfesta.data.Menu;
+import com.example.somaggiainfesta.fragments.CashDeskSettingsFrag;
 import com.example.somaggiainfesta.fragments.OrderFragment;
 import com.example.somaggiainfesta.fragments.StaticCommandsFragment;
 import com.example.somaggiainfesta.network.CashDeskNetOrchestrator;
@@ -96,7 +97,13 @@ public class CashDesk extends RestaurantModule{
                                     setupServedRecyclerView();
                                     break;
                                 case R.id.action_settings:
-                                    Toast.makeText(CashDesk.this, "Da costruire", Toast.LENGTH_SHORT).show();
+                                    inflateFragment(CashDeskSettingsFrag.newInstance());
+                                    TextView ip = (TextView)findViewById(R.id.settings_ip);
+                                    TextView served = (TextView)findViewById(R.id.settings_served);
+                                    TextView actives = (TextView)findViewById(R.id.settings_actives);
+                                    ip.setText("Cassa: "+myIp());
+                                    served.setText(String.valueOf("Comande servite: "+servedAdapter.getItemCount()));
+                                    actives.setText(String.valueOf("Comande attive: "+activesAdapter.getItemCount()));
                             }
                             return true;
                         }
