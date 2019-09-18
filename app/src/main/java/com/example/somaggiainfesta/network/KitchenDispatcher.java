@@ -8,10 +8,10 @@ import com.example.somaggiainfesta.data.Command;
 public class KitchenDispatcher extends AsyncTask<Void, Void, Command> {
     private Kitchen context;
     private String message;
-    private int cashDeskId;
+    private String cashDeskId;
     private MessageConverter cv;
 
-    public KitchenDispatcher(Kitchen context, String message, int cashDeskId)
+    public KitchenDispatcher(Kitchen context, String message, String cashDeskId)
     {
         this.context = context;
         this.message = message;

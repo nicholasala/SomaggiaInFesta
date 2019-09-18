@@ -10,6 +10,7 @@
     android:background="?android:attr/selectableItemBackground">
 
     <LinearLayout
+        android:id="@+id/static_cont"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,11 +36,9 @@
             <TextView
                 android:id="@+id/static_name"
                 android:layout_toEndOf="@id/static_number"
-                android:layout_toRightOf="@id/static_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginLeft="20dp"
                 android:paddingTop="16dp"
                 android:textStyle="bold"
                 android:textSize="22sp"
@@ -48,16 +47,27 @@
 
             <TextView
                 android:id="@+id/static_added"
+                android:layout_toStartOf="@id/static_command_id"
                 android:layout_toEndOf="@id/static_number"
-                android:layout_toRightOf="@id/static_number"
                 android:layout_below="@id/static_name"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginLeft="20dp"
                 android:textStyle="italic"
                 android:textSize="20sp"
                 tools:text="26"
+                android:textColor="@color/colorPrimaryText"/>
+
+            <TextView
+                android:id="@+id/static_command_id"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/static_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:textStyle="italic"
+                android:textSize="20sp"
+                tools:text="id"
                 android:textColor="@color/colorPrimaryText"/>
 
         </RelativeLayout>

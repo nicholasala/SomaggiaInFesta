@@ -31,7 +31,6 @@ import com.example.somaggiainfesta.network.CashDeskNetOrchestrator;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CashDesk extends RestaurantModule{
@@ -44,7 +43,7 @@ public class CashDesk extends RestaurantModule{
     private RecyclerView servedRecycler;
     private CashDeskNetOrchestrator netManager;
     private Menu menu;
-    private Integer commandId = 0;
+    private Integer commandId = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -269,7 +268,11 @@ public class CashDesk extends RestaurantModule{
     }
 
     public void onCommandConfirm(int id){
-        Toast.makeText(CashDesk.this, "comanda confermata" + id, Toast.LENGTH_LONG).show();
+        Command c = activesAdapter.removeCommandById(id);
+        if(c != null)
+            servedAdapter.putCommand(c);
+
+        Toast.makeText(CashDesk.this, "Comanda "+id+" confermata", Toast.LENGTH_LONG).show();
     }
 
     public void onMenu(Menu m){

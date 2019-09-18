@@ -45,6 +45,7 @@ public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.Stat
 
         commandViewHolder.added.setText(sb.toString());
         commandViewHolder.number.setText(String.valueOf(command.getNumber()));
+        commandViewHolder.id.setText(String.valueOf(command.getId()));
     }
 
     @Override
@@ -52,13 +53,17 @@ public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.Stat
         return commands.size();
     }
 
-    public void removeCommand(int position){
-        commands.remove(position);
-        notifyItemRemoved(position);
-    }
+    public Command removeCommandById(int id){
+        for(int i=0; i<commands.size(); i++){
+            Command c = commands.get(i);
+            if(c.getId() == id){
+                commands.remove(i);
+                notifyItemRemoved(i);
+                return c;
+            }
+        }
 
-    public Command getCommand(int position){
-        return commands.get(position);
+        return null;
     }
 
     public void putCommand(Command c){
@@ -68,13 +73,14 @@ public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.Stat
 
     //ViewHolder
     public class StaticCommandViewHolder extends RecyclerView.ViewHolder{
-        private TextView name, added, number;
+        private TextView name, added, number, id;
 
         public StaticCommandViewHolder(View view){
             super(view);
             name = (TextView) view.findViewById(R.id.static_name);
             added = (TextView) view.findViewById(R.id.static_added);
             number = (TextView) view.findViewById(R.id.static_number);
+            id = (TextView) view.findViewById(R.id.static_command_id);
         }
     }
 }

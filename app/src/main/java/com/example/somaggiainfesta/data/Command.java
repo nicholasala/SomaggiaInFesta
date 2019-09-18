@@ -2,7 +2,7 @@ package com.example.somaggiainfesta.data;
 
 public class Command {
     private int id;
-    private int cashdesk;
+    private String cashdesk;
     private String name;
     private String[] added;
     private int number;
@@ -13,14 +13,14 @@ public class Command {
         this.added = new String[]{};
     }
 
-    public Command(int id, String name, int cashdesk, String[] added) {
+    public Command(int id, String name, String cashdesk, String[] added) {
         this.id = id;
         this.cashdesk = cashdesk;
         this.name = name;
         this.added = added;
     }
 
-    public Command(int id, String name, int cashdesk, int number) {
+    public Command(int id, String name, String cashdesk, int number) {
         this.id = id;
         this.cashdesk = cashdesk;
         this.name = name;
@@ -28,7 +28,7 @@ public class Command {
         this.added = new String[]{};
     }
 
-    public Command(int id, String name, int cashdesk, String[] added, int number) {
+    public Command(int id, String name, String cashdesk, String[] added, int number) {
         this.id = id;
         this.cashdesk = cashdesk;
         this.name = name;
@@ -51,11 +51,11 @@ public class Command {
         this.id = id;
     }
 
-    public int getCashdesk() {
+    public String getCashdesk() {
         return cashdesk;
     }
 
-    public void setCashdesk(int cashdesk) {
+    public void setCashdesk(String cashdesk) {
         this.cashdesk = cashdesk;
     }
 
