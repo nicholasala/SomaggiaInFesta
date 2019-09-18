@@ -1,5 +1,7 @@
 package com.example.somaggiainfesta;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -15,10 +17,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.somaggiainfesta.adapters.AddsOrderAdapter;
 import com.example.somaggiainfesta.adapters.StaticComAdapter;
 import com.example.somaggiainfesta.data.Command;
 import com.example.somaggiainfesta.data.Keys;
@@ -29,16 +31,20 @@ import com.example.somaggiainfesta.network.CashDeskNetOrchestrator;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CashDesk extends RestaurantModule{
     private TextView infoText;
     private Button retryButton;
     private StaticComAdapter activesAdapter;
     private StaticComAdapter servedAdapter;
+    private AddsOrderAdapter addsAdapter;
     private RecyclerView activeRecycler;
     private RecyclerView servedRecycler;
     private CashDeskNetOrchestrator netManager;
     private Menu menu;
+    private Integer commandId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,10 +89,7 @@ public class CashDesk extends RestaurantModule{
                         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                             switch (item.getItemId()) {
                                 case R.id.action_actives:
-                                    inflateFragment(StaticCommandsFragment.newInstance(true));
-                                    activeRecycler = (RecyclerView)findViewById(R.id.static_recycler);
-                                    setupActivesRecyclerView();
-                                    setupFAB();
+                                    setupActiveFragment();
                                     break;
                                 case R.id.action_served:
                                     inflateFragment(StaticCommandsFragment.newInstance(false));
@@ -131,6 +134,13 @@ public class CashDesk extends RestaurantModule{
         }
     }
 
+    private void setupActiveFragment(){
+        inflateFragment(StaticCommandsFragment.newInstance(true));
+        activeRecycler = (RecyclerView)findViewById(R.id.static_recycler);
+        setupActivesRecyclerView();
+        setupFAB();
+    }
+
     private void setupActivesRecyclerView(){
         activeRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         activeRecycler.setItemAnimator(new DefaultItemAnimator());
@@ -161,14 +171,12 @@ public class CashDesk extends RestaurantModule{
     private void setupOrderFragment(){
         ImageView add = (ImageView)findViewById(R.id.increment_food_icon);
         ImageView remove = (ImageView)findViewById(R.id.decrement_food_icon);
-        ImageView cancel = (ImageView)findViewById(R.id.order_cancel);
-        ImageView send = (ImageView)findViewById(R.id.order_send);
-        Spinner foods = (Spinner)findViewById(R.id.order_foods);
+        final TextView number = (TextView) findViewById(R.id.order_number);
+        final Spinner foods = (Spinner)findViewById(R.id.order_foods);
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView number = (TextView) findViewById(R.id.order_number);
                 number.setText(String.valueOf(Integer.valueOf(number.getText().toString()) + 1));
             }
         });
@@ -176,7 +184,6 @@ public class CashDesk extends RestaurantModule{
         remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView number = (TextView) findViewById(R.id.order_number);
                 int value = Integer.valueOf(number.getText().toString());
                 if(value > 1)
                     number.setText(String.valueOf(value - 1));
@@ -184,9 +191,73 @@ public class CashDesk extends RestaurantModule{
         });
 
         //setup foods spinner
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, menu.getNames());
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        foods.setAdapter(adapter);
+        ArrayAdapter<String> foodsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, menu.getNames());
+        foodsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        foods.setAdapter(foodsAdapter);
+
+        //setup adds recyclerview
+        addsAdapter = new AddsOrderAdapter();
+        for(String a : menu.getAdds())
+            addsAdapter.putElement(a);
+
+        RecyclerView orderAddsRV = (RecyclerView) findViewById(R.id.order_adds_recycler);
+        orderAddsRV.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        orderAddsRV.setAdapter(addsAdapter);
+
+        //setup cancel and send command action
+        ImageView cancel = (ImageView)findViewById(R.id.order_cancel);
+        ImageView send = (ImageView)findViewById(R.id.order_send);
+
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(CashDesk.this)
+                        .setTitle("Inviare comanda ?")
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String foodName = foods.getSelectedItem().toString();
+
+                                if(!foodName.equals("")){
+                                    Command c = new Command(commandId++, foodName);
+                                    List<String> added = addsAdapter.getCheckedAdds();
+                                    String[] sAdded = new String[added.size()];
+
+                                    for(int i=0; i<sAdded.length; i++){
+                                        sAdded[i] = added.get(i);
+                                    }
+
+                                    c.setAdded(sAdded);
+                                    c.setNumber(Integer.valueOf(number.getText().toString()));
+                                    netManager.sendCommand(c);
+
+                                    activesAdapter.putCommand(c);
+                                    setupActiveFragment();
+                                }else{
+                                    Toast.makeText(CashDesk.this, "Comanda non valida", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .show();
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(CashDesk.this)
+                        .setTitle("Annullare ?")
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                setupActiveFragment();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .show();
+            }
+        });
     }
 
     private void inflateFragment(Fragment frag){
