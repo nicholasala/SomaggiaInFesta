@@ -11,8 +11,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -145,13 +148,6 @@ public class CashDesk extends RestaurantModule{
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                ///////
-                if(netManager.isOpen())
-                    netManager.sendCommand(new Command(1, "Panino", new String[]{"maionese", "Ketchup"}, 2));
-                else
-                    Toast.makeText(CashDesk.this, "Connessione con la cucina interrotta", Toast.LENGTH_LONG).show();
-
                 if(menu != null && menu.isValid()){
                     inflateFragment(OrderFragment.newInstance());
                     setupOrderFragment();
@@ -165,6 +161,9 @@ public class CashDesk extends RestaurantModule{
     private void setupOrderFragment(){
         ImageView add = (ImageView)findViewById(R.id.increment_food_icon);
         ImageView remove = (ImageView)findViewById(R.id.decrement_food_icon);
+        ImageView cancel = (ImageView)findViewById(R.id.order_cancel);
+        ImageView send = (ImageView)findViewById(R.id.order_send);
+        Spinner foods = (Spinner)findViewById(R.id.order_foods);
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,6 +182,11 @@ public class CashDesk extends RestaurantModule{
                     number.setText(String.valueOf(value - 1));
             }
         });
+
+        //setup foods spinner
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, menu.getNames());
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        foods.setAdapter(adapter);
     }
 
     private void inflateFragment(Fragment frag){

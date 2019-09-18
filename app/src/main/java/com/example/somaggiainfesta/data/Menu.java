@@ -29,6 +29,6 @@ public class Menu {
     }
 
     public boolean isValid(){
-        return names.size() > 0 || adds.size() > 0;
+        return names.size() > 0;
     }
 }

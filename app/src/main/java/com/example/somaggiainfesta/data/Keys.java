@@ -16,7 +16,7 @@ public class Keys {
     }
 
     public static class ConstValues{
-        public static final int conLostTimeout = 72000;
+        public static final int conLostTimeout = 7200000;
     }
 
     public static class MessageText{

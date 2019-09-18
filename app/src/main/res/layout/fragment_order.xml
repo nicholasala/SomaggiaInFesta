@@ -72,6 +72,7 @@
                 android:textColor="@color/colorAccent"/>
 
             <Spinner
+                android:id="@+id/order_foods"
                 android:layout_width="match_parent"
                 android:layout_height="67dp">
 
@@ -120,7 +121,7 @@
         android:background="@color/colorPrimaryText">
 
         <ImageView
-            android:id="@+id/cancel_icon"
+            android:id="@+id/order_cancel"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_action_cancel"
@@ -134,7 +135,7 @@
             android:contentDescription="Image that allow return to actives commands fragment" />
 
         <ImageView
-            android:id="@+id/send_icon"
+            android:id="@+id/order_send"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_action_send"
