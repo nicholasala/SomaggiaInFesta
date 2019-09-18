@@ -45,7 +45,11 @@ public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.Stat
 
         commandViewHolder.added.setText(sb.toString());
         commandViewHolder.number.setText(String.valueOf(command.getNumber()));
-        commandViewHolder.id.setText(String.valueOf(command.getId()));
+        if(command.hasCashDesk()){
+            commandViewHolder.id.setText(String.valueOf(command.getId() + "~" + command.getCashdesk().substring(command.getCashdesk().lastIndexOf('.') + 1)));
+        }else{
+            commandViewHolder.id.setText(String.valueOf(command.getId()));
+        }
     }
 
     @Override

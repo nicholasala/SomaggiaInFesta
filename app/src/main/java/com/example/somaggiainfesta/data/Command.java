@@ -82,4 +82,8 @@ public class Command {
     public void setNumber(int number) {
         this.number = number;
     }
+
+    public boolean hasCashDesk(){
+        return this.cashdesk != null;
+    }
 }

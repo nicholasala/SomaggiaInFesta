@@ -101,7 +101,9 @@ public class CashDesk extends RestaurantModule{
                                     TextView ip = (TextView)findViewById(R.id.settings_ip);
                                     TextView served = (TextView)findViewById(R.id.settings_served);
                                     TextView actives = (TextView)findViewById(R.id.settings_actives);
-                                    ip.setText("Cassa: "+myIp());
+
+                                    String myIp = myIp();
+                                    ip.setText("Identificativo cassa: "+myIp.substring(myIp.lastIndexOf('.') + 1));
                                     served.setText(String.valueOf("Comande servite: "+servedAdapter.getItemCount()));
                                     actives.setText(String.valueOf("Comande attive: "+activesAdapter.getItemCount()));
                             }
