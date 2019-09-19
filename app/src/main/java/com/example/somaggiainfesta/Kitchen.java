@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -35,12 +36,20 @@ import com.example.somaggiainfesta.network.KitchenNetOrchestrator;
 import com.example.somaggiainfesta.network.MessageConverter;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Kitchen extends RestaurantModule implements SwipeController.RecyclerItemTouchHelperListener{
     private TextView infoText;
@@ -53,8 +62,8 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
     private RecyclerView namesRecycler;
     private RecyclerView addsRecycler;
     private KitchenNetOrchestrator netManager;
-    private final String menuFile = "menu.json";
     public static volatile Menu menu;
+    private final String menuFile = "menu.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +75,30 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
         try {
             netManager.stop();
         } catch (IOException | InterruptedException  e) {
             e.printStackTrace();
         }
+
+        //save report in a txt file of the previus service
+        try {
+            String reportFile = "report.txt";
+            File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), reportFile);
+            FileOutputStream fos = new FileOutputStream(f, true);
+            fos.write(getServiceDetails().getBytes());
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         super.onDestroy();
     }
 
@@ -374,5 +401,36 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
     public void onCommand(Command c){
         allarm();
         activesAdapter.putCommand(c);
+    }
+
+    public String getServiceDetails(){
+        StringBuilder sb = new StringBuilder();
+        Calendar c = Calendar.getInstance();
+        DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+        sb.append("SomaggiaInFesta ");
+        sb.append(df.format(new Date()));
+        sb.append("\n");
+        sb.append("Serviti: \n");
+
+        ArrayList<Command> served = (ArrayList<Command>) servedAdapter.getCommands();
+        ArrayList<String> distinctElements = new ArrayList<>();
+
+        for(Command cmd : served){
+            if(!distinctElements.contains(cmd.getName()))
+                distinctElements.add(cmd.getName());
+        }
+
+        for(String s : distinctElements){
+            int number = 0;
+            for(int i=0; i<served.size(); i++){
+                if(served.get(i).getName().equals(s))
+                    number = number + served.get(i).getNumber();
+                if(i == served.size() - 1)
+                    sb.append(s + ": "+number+"\n");
+            }
+        }
+
+        sb.append("\n\n\n");
+        return sb.toString();
     }
 }

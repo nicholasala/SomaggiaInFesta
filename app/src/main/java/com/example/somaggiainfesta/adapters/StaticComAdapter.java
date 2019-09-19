@@ -66,6 +66,8 @@ public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.Stat
         return commands.size();
     }
 
+    public List<Command> getCommands(){ return commands; }
+
     public Command removeCommandById(int id){
         for(int i=0; i<commands.size(); i++){
             Command c = commands.get(i);
