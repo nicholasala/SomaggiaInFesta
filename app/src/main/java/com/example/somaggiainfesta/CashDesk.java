@@ -121,8 +121,8 @@ public class CashDesk extends RestaurantModule{
                     }
 
                     //setup adapters
-                    activesAdapter = new StaticComAdapter();
-                    servedAdapter = new StaticComAdapter();
+                    activesAdapter = new StaticComAdapter(false);
+                    servedAdapter = new StaticComAdapter(true);
 
                     //setup manually first fragment
                     inflateFragment(StaticCommandsFragment.newInstance(true));

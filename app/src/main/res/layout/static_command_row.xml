@@ -10,7 +10,6 @@
     android:background="?android:attr/selectableItemBackground">
 
     <LinearLayout
-        android:id="@+id/static_cont"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,6 +17,7 @@
         android:background="@android:color/white">
 
         <RelativeLayout
+            android:id="@+id/static_cont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

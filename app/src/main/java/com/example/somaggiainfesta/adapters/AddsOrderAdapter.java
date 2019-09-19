@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CheckedTextView;
 import android.widget.TextView;
 
 import com.example.somaggiainfesta.R;
@@ -36,7 +35,7 @@ public class AddsOrderAdapter extends RecyclerView.Adapter<AddsOrderAdapter.AddV
         addViewHolder.checkB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checked.add(i, !checked.get(i));
+                checked.set(i, !checked.get(i));
             }
         });
     }

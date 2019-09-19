@@ -264,7 +264,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
 
         //setup adapters
         activesAdapter = new ActiveComAdapter();
-        servedAdapter = new StaticComAdapter();
+        servedAdapter = new StaticComAdapter(false);
         namesAdapter = new MenuElAdapter();
         addsAdapter = new MenuElAdapter();
 

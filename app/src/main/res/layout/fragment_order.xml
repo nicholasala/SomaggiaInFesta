@@ -3,73 +3,69 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="2">
-    
+
     <LinearLayout
+        android:id="@+id/order_food_cont"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_weight="1.4">
+        android:layout_weight="0.1">
 
         <RelativeLayout
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:padding="6dp">
 
             <ImageView
                 android:id="@+id/decrement_food_icon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/ic_action_remove"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="11dp"
                 android:layout_marginStart="11dp"
                 android:clickable="true"
+                android:contentDescription="Image that allow menu element remove"
                 android:focusable="true"
-                android:contentDescription="Image that allow menu element remove" />
+                android:src="@drawable/ic_action_remove" />
 
             <TextView
-                android:text="Piatto"
-                android:textStyle="italic"
-                android:textSize="24sp"
-                android:gravity="center"
-                android:textColor="@color/colorSecondaryText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent"/>
+                android:gravity="center"
+                android:text="Piatto"
+                android:textColor="@color/colorSecondaryText"
+                android:textSize="24sp"
+                android:textStyle="italic" />
 
             <ImageView
                 android:id="@+id/increment_food_icon"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/ic_action_add"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="11dp"
                 android:layout_marginEnd="11dp"
                 android:clickable="true"
+                android:contentDescription="Image that allow menu element remove"
                 android:focusable="true"
-                android:contentDescription="Image that allow menu element remove" />
+                android:src="@drawable/ic_action_add" />
 
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:padding="6dp">
 
             <TextView
                 android:id="@+id/order_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:padding="12dp"
                 android:layout_marginStart="12dp"
-                android:layout_marginLeft="12dp"
-                android:textSize="32sp"
+                android:padding="12dp"
                 android:text="1"
-                android:textColor="@color/colorAccent"/>
+                android:textColor="@color/colorAccent"
+                android:textSize="32sp"
+                android:textStyle="bold" />
 
             <Spinner
                 android:id="@+id/order_foods"
@@ -86,35 +82,35 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:layout_weight="0.6">
+        android:layout_weight="1.9">
 
         <RelativeLayout
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:padding="6dp">
 
             <TextView
-                android:text="Aggiunte"
-                android:textStyle="italic"
-                android:textSize="24sp"
-                android:gravity="center"
-                android:textColor="@color/colorSecondaryText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent" />
+                android:gravity="center"
+                android:text="Aggiunte"
+                android:textColor="@color/colorSecondaryText"
+                android:textSize="24sp"
+                android:textStyle="italic" />
 
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:padding="6dp">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/order_adds_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:clipToPadding="false"
+                android:orientation="horizontal"
                 android:overScrollMode="never" />
 
         </LinearLayout>
@@ -122,6 +118,7 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/order_action_cont"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@color/colorPrimaryText">
@@ -132,10 +129,8 @@
             android:layout_height="40dp"
             android:src="@drawable/ic_action_cancel"
             android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="120dp"
-            android:layout_marginStart="120dp"
+            android:layout_marginStart="110dp"
             android:clickable="true"
             android:focusable="true"
             android:contentDescription="Image that allow return to actives commands fragment" />
@@ -146,10 +141,8 @@
             android:layout_height="40dp"
             android:src="@drawable/ic_action_send"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="120dp"
-            android:layout_marginEnd="120dp"
+            android:layout_marginEnd="110dp"
             android:clickable="true"
             android:focusable="true"
             android:contentDescription="Image that allow sending command to kitchen" />

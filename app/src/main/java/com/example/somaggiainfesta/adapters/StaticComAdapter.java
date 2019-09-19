@@ -1,10 +1,16 @@
 package com.example.somaggiainfesta.adapters;
 
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.somaggiainfesta.data.Command;
@@ -15,9 +21,12 @@ import java.util.List;
 
 public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.StaticCommandViewHolder> {
     private List<Command> commands;
+    private List<Boolean> viewed;
 
-    public StaticComAdapter(){
+    public StaticComAdapter(Boolean newItemAnimation){
         this.commands = new ArrayList<>();
+        if(newItemAnimation)
+            this.viewed = new ArrayList<>();
     }
 
     @NonNull
@@ -50,11 +59,20 @@ public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.Stat
         }else{
             commandViewHolder.id.setText(String.valueOf(command.getId()));
         }
+
+        if(viewed != null && !viewed.get(i))
+            commandViewHolder.cont.setBackgroundColor(Color.GREEN);
     }
 
     @Override
     public int getItemCount() {
         return commands.size();
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull StaticCommandViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        viewCommands();
     }
 
     public Command removeCommandById(int id){
@@ -72,15 +90,26 @@ public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.Stat
 
     public void putCommand(Command c){
         commands.add(c);
+        if(viewed != null)
+            viewed.add(false);
         notifyItemInserted(commands.size() - 1);
+    }
+
+    public void viewCommands(){
+        if(viewed != null)
+            for(int i=0; i<viewed.size(); i++)
+                if(!viewed.get(i))
+                    viewed.set(i, true);
     }
 
     //ViewHolder
     public class StaticCommandViewHolder extends RecyclerView.ViewHolder{
         private TextView name, added, number, id;
+        private RelativeLayout cont;
 
         public StaticCommandViewHolder(View view){
             super(view);
+            cont = (RelativeLayout) view.findViewById(R.id.static_cont);
             name = (TextView) view.findViewById(R.id.static_name);
             added = (TextView) view.findViewById(R.id.static_added);
             number = (TextView) view.findViewById(R.id.static_number);
