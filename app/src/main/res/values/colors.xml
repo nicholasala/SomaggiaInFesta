@@ -10,4 +10,5 @@
     <color name="colorDivider">#BDBDBD</color>
     <color name="colorOk">#388E3C</color>
     <color name="colorError">#B00020</color>
+    <color name="colorNotify">#f44336</color>
 </resources>

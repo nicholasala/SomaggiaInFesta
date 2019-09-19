@@ -128,7 +128,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                         setupActivesRecyclerView();
                         break;
                     case R.id.action_served:
-                        inflateFragment(StaticCommandsFragment.newInstance(false));
+                        inflateFragment(StaticCommandsFragment.newInstance(false, false));
                         servedRecycler = (RecyclerView)findViewById(R.id.static_recycler);
                         setupServedRecyclerView();
                         break;
@@ -372,6 +372,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
     }
 
     public void onCommand(Command c){
+        allarm();
         activesAdapter.putCommand(c);
     }
 }

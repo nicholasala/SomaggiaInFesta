@@ -35,6 +35,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 public class CashDesk extends RestaurantModule{
+    private Fragment actualFrag;
     private TextView infoText;
     private Button retryButton;
     private StaticComAdapter activesAdapter;
@@ -89,14 +90,16 @@ public class CashDesk extends RestaurantModule{
                         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                             switch (item.getItemId()) {
                                 case R.id.action_actives:
+                                    clearServedUI();
                                     setupActiveFragment();
                                     break;
                                 case R.id.action_served:
-                                    inflateFragment(StaticCommandsFragment.newInstance(false));
+                                    inflateFragment(StaticCommandsFragment.newInstance(false, true));
                                     servedRecycler = (RecyclerView)findViewById(R.id.static_recycler);
                                     setupServedRecyclerView();
                                     break;
                                 case R.id.action_settings:
+                                    clearServedUI();
                                     inflateFragment(CashDeskSettingsFrag.newInstance());
                                     TextView ip = (TextView)findViewById(R.id.settings_ip);
                                     TextView served = (TextView)findViewById(R.id.settings_served);
@@ -125,10 +128,7 @@ public class CashDesk extends RestaurantModule{
                     servedAdapter = new StaticComAdapter(true);
 
                     //setup manually first fragment
-                    inflateFragment(StaticCommandsFragment.newInstance(true));
-                    activeRecycler = (RecyclerView)findViewById(R.id.static_recycler);
-                    setupActivesRecyclerView();
-                    setupFAB();
+                    setupActiveFragment();
                 }else{
                     infoText.setText(R.string.cucina);
                     retryButton.setVisibility(View.VISIBLE);
@@ -143,7 +143,7 @@ public class CashDesk extends RestaurantModule{
     }
 
     private void setupActiveFragment(){
-        inflateFragment(StaticCommandsFragment.newInstance(true));
+        inflateFragment(StaticCommandsFragment.newInstance(true, false));
         activeRecycler = (RecyclerView)findViewById(R.id.static_recycler);
         setupActivesRecyclerView();
         setupFAB();
@@ -156,7 +156,7 @@ public class CashDesk extends RestaurantModule{
     }
 
     private void setupServedRecyclerView(){
-        servedRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        servedRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true));
         servedRecycler.setItemAnimator(new DefaultItemAnimator());
         servedRecycler.setAdapter(servedAdapter);
     }
@@ -272,11 +272,28 @@ public class CashDesk extends RestaurantModule{
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frag_container, frag);
         transaction.commit();
+        actualFrag = frag;
         //force transaction execution
         getSupportFragmentManager().executePendingTransactions();
     }
 
+    private void clearServedUI(){
+        //if the previusly loaded fragment was the served fragment, change the state of the not viewed confirmed commands
+        if(actualFrag instanceof StaticCommandsFragment && ((StaticCommandsFragment)actualFrag).newItemAnimation){
+            servedAdapter.viewCommands();
+            BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+            bottomNavigationView.getMenu().findItem(R.id.action_served).setIcon(R.drawable.ic_action_served);
+        }
+    }
+
+    private void allarmServedIcon(){
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.getMenu().findItem(R.id.action_served).setIcon(R.drawable.ic_action_notify);
+    }
+
     public void onCommandConfirm(int id){
+        allarmServedIcon();
+        allarm();
         Command c = activesAdapter.removeCommandById(id);
         if(c != null)
             servedAdapter.putCommand(c);
@@ -285,7 +302,7 @@ public class CashDesk extends RestaurantModule{
     }
 
     public void onMenu(Menu m){
-        Toast.makeText(CashDesk.this, "Menu ricevuto", Toast.LENGTH_LONG).show();
+        Toast.makeText(CashDesk.this, "Menu ricevuto", Toast.LENGTH_SHORT).show();
         this.menu = m;
     }
 }

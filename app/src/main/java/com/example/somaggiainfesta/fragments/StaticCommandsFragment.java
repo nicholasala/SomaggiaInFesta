@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 import com.example.somaggiainfesta.R;
 
 public class StaticCommandsFragment extends Fragment {
-    private boolean fab;
+    public boolean fab;
+    public boolean newItemAnimation;
 
-    public static StaticCommandsFragment newInstance(boolean fab){
+    public static StaticCommandsFragment newInstance(boolean fab, boolean newItemAnimation){
         StaticCommandsFragment fragment = new StaticCommandsFragment();
         fragment.fab = fab;
+        fragment.newItemAnimation = newItemAnimation;
         return fragment;
     }
 

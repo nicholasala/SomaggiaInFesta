@@ -1,5 +1,8 @@
 package com.example.somaggiainfesta;
 
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.support.v7.app.AppCompatActivity;
 
@@ -22,4 +25,16 @@ public abstract class RestaurantModule extends AppCompatActivity {
     }
 
     public boolean isKitchen(){ return myIp().equals(Keys.ip.kitchen_string); }
+
+    public void allarm(){
+        //code from https://stackoverflow.com/questions/4441334/how-to-play-an-android-notification-sound
+
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
