@@ -100,7 +100,11 @@ public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.Stat
     }
 
     public boolean hasCommandToView(){
-        return !viewed.get(viewed.size());
+        if(viewed != null && viewed.size() > 0){
+            return !viewed.get(viewed.size()-1);
+        }
+
+        return false;
     }
 
     //ViewHolder

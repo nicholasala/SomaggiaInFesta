@@ -81,22 +81,24 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
 
     @Override
     protected void onDestroy() {
-        try {
-            netManager.stop();
-        } catch (IOException | InterruptedException  e) {
-            e.printStackTrace();
-        }
+        if(netManager != null){
+            try {
+                netManager.stop();
+            } catch (IOException | InterruptedException  e) {
+                e.printStackTrace();
+            }
 
-        //save report in a txt file of the previus service
-        try {
-            String reportFile = "report.txt";
-            File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), reportFile);
-            FileOutputStream fos = new FileOutputStream(f, true);
-            fos.write(getServiceDetails().getBytes());
-            fos.flush();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            //save report in a txt file of the previus service
+            try {
+                String reportFile = "report.txt";
+                File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), reportFile);
+                FileOutputStream fos = new FileOutputStream(f, true);
+                fos.write(getServiceDetails().getBytes());
+                fos.flush();
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         super.onDestroy();

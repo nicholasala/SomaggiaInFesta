@@ -119,10 +119,14 @@ public abstract class RestaurantModule extends AppCompatActivity {
     }
 
     protected void activateBottomIcon(int index){
-        for(TextView t : bottomItems)
+        for(TextView t : bottomItems){
             t.setTextColor(getColor(R.color.colorPrimaryText));
+            t.setTextSize(17);
+        }
 
         bottomItems[index].setTextColor(Color.WHITE);
+        //bottomItems[index].getCompoundDrawables()[0].setTint(getColor(R.color.colorNotify));
+        bottomItems[index].setTextSize(20);
     }
 
     protected int getBottomIndexOf(String title){
@@ -132,6 +136,4 @@ public abstract class RestaurantModule extends AppCompatActivity {
 
         return -1;
     }
-
-
 }

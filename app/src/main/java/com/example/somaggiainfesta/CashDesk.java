@@ -1,5 +1,6 @@
 package com.example.somaggiainfesta;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,6 +22,7 @@ import com.example.somaggiainfesta.adapters.StaticComAdapter;
 import com.example.somaggiainfesta.data.Command;
 import com.example.somaggiainfesta.data.Keys;
 import com.example.somaggiainfesta.data.Menu;
+import com.example.somaggiainfesta.fragments.ActiveCommandsFragment;
 import com.example.somaggiainfesta.fragments.CashDeskSettingsFrag;
 import com.example.somaggiainfesta.fragments.OrderFragment;
 import com.example.somaggiainfesta.fragments.StaticCommandsFragment;
@@ -62,8 +65,11 @@ public class CashDesk extends RestaurantModule{
 
     @Override
     protected void onDestroy() {
-        netManager.closeConnection(Keys.MessageCode.close, Keys.MessageText.close);
-        netManager.close();
+        if(netManager != null){
+            netManager.closeConnection(Keys.MessageCode.close, Keys.MessageText.close);
+            netManager.close();
+        }
+
         super.onDestroy();
     }
 
@@ -158,7 +164,7 @@ public class CashDesk extends RestaurantModule{
 
         if(servedIndex != -1){
             bottomItems[servedIndex].setTextColor(getColor(R.color.colorNotify));
-
+            //bottomItems[servedIndex].compound
         }
 
         //TODO
@@ -166,20 +172,36 @@ public class CashDesk extends RestaurantModule{
         //bottomNavigationView.getMenu().findItem(R.id.action_served).setIcon(R.drawable.ic_action_notify);
     }
 
+    @SuppressLint("RestrictedApi")
     private void setupFAB(int id){
-        FloatingActionButton fab = findViewById(R.id.fab);
+        final FloatingActionButton fab = findViewById(R.id.fab);
         fab.setImageDrawable(getDrawable(id));
+        fab.setVisibility(View.VISIBLE);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                if(menu != null && menu.isValid()){
-                    inflateFragment(OrderFragment.newInstance());
-                    setupOrderFragment();
-                }else{
-                    Toast.makeText(CashDesk.this, "Menu non disponibile", Toast.LENGTH_LONG).show();
-                }
+            public void onClick(View v) {
+                onFABClick(fab);
             }
         });
+
+    }
+
+    @SuppressLint("RestrictedApi")
+    private void onFABClick(FloatingActionButton fab){
+        if(((StaticCommandsFragment)actualFrag).newItemAnimation){
+            servedAdapter.viewCommands();
+            setupServedFragment();
+            //TODO far scorrere il servedRecycler alla cima
+            fab.setVisibility(View.GONE);
+        }else{
+            if(menu != null && menu.isValid()){
+                inflateFragment(OrderFragment.newInstance());
+                setupOrderFragment();
+            }else{
+                Toast.makeText(CashDesk.this, "Menu non disponibile", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     private void setupOrderFragment(){
@@ -266,13 +288,18 @@ public class CashDesk extends RestaurantModule{
     }
 
     public void onCommandConfirm(int id){
-        allarmServedIcon();
-        allarm();
         Command c = activesAdapter.removeCommandById(id);
-        if(c != null)
-            servedAdapter.putCommand(c);
 
-        Toast.makeText(CashDesk.this, "Comanda "+id+" confermata", Toast.LENGTH_LONG).show();
+        if(c != null){
+            allarmServedIcon();
+            allarm();
+            servedAdapter.putCommand(c);
+            Toast.makeText(CashDesk.this, "Comanda "+id+" confermata", Toast.LENGTH_LONG).show();
+
+            if(((StaticCommandsFragment)actualFrag).newItemAnimation)
+                setupFAB(R.drawable.ic_action_done);
+        }
+
     }
 
     public void onMenu(Menu m){
