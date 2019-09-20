@@ -1,0 +1,55 @@
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="9"
+    android:background="@color/colorPrimary"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:drawableTop="@drawable/ic_action_actives"
+            android:text="Attivi"
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="17sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:drawableTop="@drawable/ic_action_served"
+            android:text="Serviti"
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="17sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:drawableTop="@drawable/ic_action_settings"
+            android:text="Impostazioni"
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="17sp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -25,7 +25,7 @@ public class AddsOrderAdapter extends RecyclerView.Adapter<AddsOrderAdapter.AddV
     @NonNull
     @Override
     public AddViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.add_order_row, viewGroup, false);
+        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.order_add_row, viewGroup, false);
         return new AddViewHolder(itemView);
     }
 

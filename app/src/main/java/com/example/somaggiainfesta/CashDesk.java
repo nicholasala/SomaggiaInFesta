@@ -3,15 +3,10 @@ package com.example.somaggiainfesta;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -35,7 +30,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 public class CashDesk extends RestaurantModule{
-    private Fragment actualFrag;
     private TextView infoText;
     private Button retryButton;
     private StaticComAdapter activesAdapter;
@@ -84,35 +78,8 @@ public class CashDesk extends RestaurantModule{
             case FOUND:
                 if(!isKitchen()){
                     setContentView(R.layout.activity_cashdesk);
-                    BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-                    bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-                        @Override
-                        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                            switch (item.getItemId()) {
-                                case R.id.action_actives:
-                                    clearServedUI();
-                                    setupActiveFragment();
-                                    break;
-                                case R.id.action_served:
-                                    inflateFragment(StaticCommandsFragment.newInstance(false, true));
-                                    servedRecycler = (RecyclerView)findViewById(R.id.static_recycler);
-                                    setupServedRecyclerView();
-                                    break;
-                                case R.id.action_settings:
-                                    clearServedUI();
-                                    inflateFragment(CashDeskSettingsFrag.newInstance());
-                                    TextView ip = (TextView)findViewById(R.id.settings_ip);
-                                    TextView served = (TextView)findViewById(R.id.settings_served);
-                                    TextView actives = (TextView)findViewById(R.id.settings_actives);
-
-                                    String myIp = myIp();
-                                    ip.setText("Identificativo cassa: "+myIp.substring(myIp.lastIndexOf('.') + 1));
-                                    served.setText(String.valueOf("Comande servite: "+servedAdapter.getItemCount()));
-                                    actives.setText(String.valueOf("Comande attive: "+activesAdapter.getItemCount()));
-                            }
-                            return true;
-                        }
-                    });
+                    inflateBottomBar();
+                    setupBottomBar();
 
                     //setup network connection and connect with kitchen
                     try {
@@ -142,27 +109,66 @@ public class CashDesk extends RestaurantModule{
         }
     }
 
-    private void setupActiveFragment(){
-        inflateFragment(StaticCommandsFragment.newInstance(true, false));
-        activeRecycler = (RecyclerView)findViewById(R.id.static_recycler);
-        setupActivesRecyclerView();
-        setupFAB();
-    }
+    protected void setupActiveFragment(){
+        clearServedUI();
 
-    private void setupActivesRecyclerView(){
+        inflateFragment(StaticCommandsFragment.newInstance(true, false));
+        activeRecycler = findViewById(R.id.static_recycler);
         activeRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         activeRecycler.setItemAnimator(new DefaultItemAnimator());
         activeRecycler.setAdapter(activesAdapter);
+
+        setupFAB(R.drawable.ic_action_plus);
     }
 
-    private void setupServedRecyclerView(){
+    protected void setupServedFragment(){
+        inflateFragment(StaticCommandsFragment.newInstance(true, true));
+        servedRecycler = findViewById(R.id.static_recycler);
         servedRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true));
         servedRecycler.setItemAnimator(new DefaultItemAnimator());
         servedRecycler.setAdapter(servedAdapter);
+
+        if(servedAdapter.hasCommandToView())
+            setupFAB(R.drawable.ic_action_done);
     }
 
-    private void setupFAB(){
+    protected void setupSettingsFragment(){
+        clearServedUI();
+
+        inflateFragment(CashDeskSettingsFrag.newInstance());
+        TextView ip = findViewById(R.id.settings_ip);
+        TextView served = findViewById(R.id.settings_served);
+        TextView actives = findViewById(R.id.settings_actives);
+
+        String myIp = myIp();
+        ip.setText("Identificativo cassa: "+myIp.substring(myIp.lastIndexOf('.') + 1));
+        served.setText("Comande servite: "+servedAdapter.getItemCount());
+        actives.setText("Comande attive: "+activesAdapter.getItemCount());
+    }
+
+    private void clearServedUI(){
+        //if the previusly loaded fragment was the served fragment, change the state of the not viewed confirmed commands
+        if(actualFrag instanceof StaticCommandsFragment && ((StaticCommandsFragment)actualFrag).newItemAnimation){
+            servedAdapter.viewCommands();
+        }
+    }
+
+    private void allarmServedIcon(){
+        int servedIndex = getBottomIndexOf("Serviti");
+
+        if(servedIndex != -1){
+            bottomItems[servedIndex].setTextColor(getColor(R.color.colorNotify));
+
+        }
+
+        //TODO
+        //BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        //bottomNavigationView.getMenu().findItem(R.id.action_served).setIcon(R.drawable.ic_action_notify);
+    }
+
+    private void setupFAB(int id){
         FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setImageDrawable(getDrawable(id));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -177,10 +183,10 @@ public class CashDesk extends RestaurantModule{
     }
 
     private void setupOrderFragment(){
-        ImageView add = (ImageView)findViewById(R.id.increment_food_icon);
-        ImageView remove = (ImageView)findViewById(R.id.decrement_food_icon);
-        final TextView number = (TextView) findViewById(R.id.order_number);
-        final Spinner foods = (Spinner)findViewById(R.id.order_foods);
+        ImageView add = findViewById(R.id.increment_food_icon);
+        ImageView remove = findViewById(R.id.decrement_food_icon);
+        final TextView number = findViewById(R.id.order_number);
+        final Spinner foods = findViewById(R.id.order_foods);
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,19 +214,19 @@ public class CashDesk extends RestaurantModule{
         for(String a : menu.getAdds())
             addsAdapter.putElement(a);
 
-        RecyclerView orderAddsRV = (RecyclerView) findViewById(R.id.order_adds_recycler);
+        RecyclerView orderAddsRV = findViewById(R.id.order_adds_recycler);
         orderAddsRV.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         orderAddsRV.setAdapter(addsAdapter);
 
         //setup cancel and send command action
-        ImageView cancel = (ImageView)findViewById(R.id.order_cancel);
-        ImageView send = (ImageView)findViewById(R.id.order_send);
+        ImageView cancel = findViewById(R.id.order_cancel);
+        ImageView send = findViewById(R.id.order_send);
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new AlertDialog.Builder(CashDesk.this)
-                        .setTitle("Inviare comanda ?")
+                        .setTitle("Inviare ?")
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -254,41 +260,9 @@ public class CashDesk extends RestaurantModule{
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(CashDesk.this)
-                        .setTitle("Annullare ?")
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                setupActiveFragment();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .show();
+                setupActiveFragment();
             }
         });
-    }
-
-    private void inflateFragment(Fragment frag){
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frag_container, frag);
-        transaction.commit();
-        actualFrag = frag;
-        //force transaction execution
-        getSupportFragmentManager().executePendingTransactions();
-    }
-
-    private void clearServedUI(){
-        //if the previusly loaded fragment was the served fragment, change the state of the not viewed confirmed commands
-        if(actualFrag instanceof StaticCommandsFragment && ((StaticCommandsFragment)actualFrag).newItemAnimation){
-            servedAdapter.viewCommands();
-            BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-            bottomNavigationView.getMenu().findItem(R.id.action_served).setIcon(R.drawable.ic_action_served);
-        }
-    }
-
-    private void allarmServedIcon(){
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        bottomNavigationView.getMenu().findItem(R.id.action_served).setIcon(R.drawable.ic_action_notify);
     }
 
     public void onCommandConfirm(int id){
@@ -302,7 +276,7 @@ public class CashDesk extends RestaurantModule{
     }
 
     public void onMenu(Menu m){
-        Toast.makeText(CashDesk.this, "Menu ricevuto", Toast.LENGTH_SHORT).show();
+        Toast.makeText(CashDesk.this, "Menu aggiornato", Toast.LENGTH_SHORT).show();
         this.menu = m;
     }
 }
