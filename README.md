@@ -1,4 +1,5 @@
-#SomaggiaInFesta
+# SomaggiaInFesta
+
 Android app that allows communication between one kitchen and many cash desks. 
 
 The goals of this communication are:
@@ -7,4 +8,4 @@ The goals of this communication are:
 * send orders from cash desks to kitchen
 * notify cash desks when an order is ready
 
-![alt text](https://raw.githubusercontent.com/nicholasala/SomaggiaInFesta/master/images/scheme.png)
+![alt text](https://github.com/nicholasala/SomaggiaInFesta/blob/master/images/scheme.png)
