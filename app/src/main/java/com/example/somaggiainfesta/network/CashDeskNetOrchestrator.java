@@ -1,7 +1,5 @@
 package com.example.somaggiainfesta.network;
 
-import android.widget.Toast;
-
 import com.example.somaggiainfesta.CashDesk;
 import com.example.somaggiainfesta.data.Command;
 import com.example.somaggiainfesta.data.Keys;

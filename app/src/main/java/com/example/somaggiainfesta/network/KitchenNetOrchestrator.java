@@ -6,7 +6,6 @@ import com.example.somaggiainfesta.data.Keys;
 import com.example.somaggiainfesta.data.Menu;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
