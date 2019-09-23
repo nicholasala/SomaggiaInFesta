@@ -14,4 +14,4 @@ The goals of this communication are:
 
 Connections are made through WebSocket protocol. At every menu changes all connected cash desks are notified and get the updated menu.
 
-The architecture used is a peer-to-peer architecture: there is no a fixed kicthen device. A device can choose if work as cash desk or as kitchen at the start of application. In this first version only one kitchen per net is allowed but in the future this structure can be extended.
+The architecture used is a peer-to-peer architecture: there is no a fixed kitchen device. A device can choose if work as cash desk or as kitchen at the start of application. In this first version only one kitchen per net is allowed but in the future this structure can be extended.
