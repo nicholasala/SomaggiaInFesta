@@ -9,3 +9,5 @@ The goals of this communication are:
 * notify cash desks when an order is ready
 
 ![alt text](https://github.com/nicholasala/SomaggiaInFesta/blob/master/images/scheme.png)
+
+Connections are made through WebSocket protocol. At every menu changes all the connected cash desk are notified and obtain the updated menu. 
