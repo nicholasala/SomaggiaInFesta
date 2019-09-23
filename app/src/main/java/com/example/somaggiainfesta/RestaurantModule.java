@@ -1,6 +1,7 @@
 package com.example.somaggiainfesta;
 
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -15,8 +16,6 @@ import android.widget.TextView;
 import com.example.somaggiainfesta.data.Keys;
 import com.example.somaggiainfesta.fragments.BottomBarFragment;
 import com.example.somaggiainfesta.network.KitchenFinder;
-
-import java.util.ArrayList;
 
 //abstract class that represent component of a restaurant (cashdesk, kitchen, ...)
 public abstract class RestaurantModule extends AppCompatActivity {
@@ -85,6 +84,8 @@ public abstract class RestaurantModule extends AppCompatActivity {
 
             switch(bottomItems[i].getText().toString()){
                 case "Attivi":
+                    bottomItems[i].setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_action_actives, 0, 0);
+
                     bottomItems[i].setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -95,6 +96,8 @@ public abstract class RestaurantModule extends AppCompatActivity {
 
                     break;
                 case "Serviti":
+                    bottomItems[i].setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_action_served, 0, 0);
+
                     bottomItems[i].setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -105,6 +108,8 @@ public abstract class RestaurantModule extends AppCompatActivity {
 
                     break;
                 case "Impostazioni":
+                    bottomItems[i].setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_action_settings, 0, 0);
+
                     bottomItems[i].setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -116,17 +121,21 @@ public abstract class RestaurantModule extends AppCompatActivity {
                     break;
             }
         }
+
+        //iniztially activate the first icon
+        activateBottomIcon(0);
     }
 
     protected void activateBottomIcon(int index){
         for(TextView t : bottomItems){
             t.setTextColor(getColor(R.color.colorPrimaryText));
-            t.setTextSize(17);
+            t.setTextSize(12);
+            t.getCompoundDrawables()[1].setTint(getColor(R.color.colorPrimaryText));
         }
 
         bottomItems[index].setTextColor(Color.WHITE);
-        //bottomItems[index].getCompoundDrawables()[0].setTint(getColor(R.color.colorNotify));
-        bottomItems[index].setTextSize(20);
+        bottomItems[index].setTextSize(13);
+        bottomItems[index].getCompoundDrawables()[1].setTint(Color.WHITE);
     }
 
     protected int getBottomIndexOf(String title){
@@ -135,5 +144,12 @@ public abstract class RestaurantModule extends AppCompatActivity {
                 return i;
 
         return -1;
+    }
+
+    protected void changeIcon(int index, int iconId, int colorId){
+        if(index != -1 && index < bottomItems.length){
+            bottomItems[index].setCompoundDrawablesWithIntrinsicBounds(0, iconId, 0, 0);
+            bottomItems[index].getCompoundDrawables()[1].setTint(getColor(colorId));
+        }
     }
 }

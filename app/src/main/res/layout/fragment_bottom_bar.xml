@@ -1,6 +1,5 @@
 <RelativeLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_weight="9"
     android:background="@color/colorPrimary"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -14,41 +13,43 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp"
+            android:padding="4dp"
             android:clickable="true"
             android:focusable="true"
             android:layout_weight="1"
             android:gravity="center"
-            android:drawableTop="@drawable/ic_action_actives"
+
             android:text="Attivi"
             android:textColor="@color/colorPrimaryText"
-            android:textSize="17sp"/>
+            android:textSize="15sp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp"
+            android:padding="4dp"
             android:clickable="true"
             android:focusable="true"
             android:layout_weight="1"
             android:gravity="center"
-            android:drawableTop="@drawable/ic_action_served"
+
             android:text="Serviti"
             android:textColor="@color/colorPrimaryText"
-            android:textSize="17sp"/>
+            android:textSize="15sp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp"
+            android:padding="4dp"
             android:clickable="true"
             android:focusable="true"
             android:layout_weight="1"
             android:gravity="center"
-            android:drawableTop="@drawable/ic_action_settings"
+
             android:text="Impostazioni"
             android:textColor="@color/colorPrimaryText"
-            android:textSize="17sp"/>
+            android:textSize="15sp"/>
+
+        <!--        android:drawableTop="@drawable/ic_action_settings"-->
 
     </LinearLayout>
 

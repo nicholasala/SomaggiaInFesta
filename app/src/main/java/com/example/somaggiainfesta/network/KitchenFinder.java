@@ -21,21 +21,23 @@ public class KitchenFinder extends AsyncTask<Void, Void, Keys.kitchenState> {
 
     @Override
     protected Keys.kitchenState doInBackground(Void... voids) {
-        try {
-            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return Keys.kitchenState.FOUND;
 
-            if (activeNetwork == null || !activeNetwork.isConnectedOrConnecting())
-                return Keys.kitchenState.NETERR;
-
-            if(InetAddress.getByAddress(Keys.ip.kitchen).isReachable(3000))
-                return Keys.kitchenState.FOUND;
-            else
-                return Keys.kitchenState.NOTFOUND;
-
-        } catch (IOException e) {
-            return Keys.kitchenState.NETERR;
-        }
+//        try {
+//            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+//            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+//
+//            if (activeNetwork == null || !activeNetwork.isConnectedOrConnecting())
+//                return Keys.kitchenState.NETERR;
+//
+//            if(InetAddress.getByAddress(Keys.ip.kitchen).isReachable(3000))
+//                return Keys.kitchenState.FOUND;
+//            else
+//                return Keys.kitchenState.NOTFOUND;
+//
+//        } catch (IOException e) {
+//            return Keys.kitchenState.NETERR;
+//        }
     }
 
     @Override

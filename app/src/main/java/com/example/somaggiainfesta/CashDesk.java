@@ -9,7 +9,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewParent;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,7 +21,6 @@ import com.example.somaggiainfesta.adapters.StaticComAdapter;
 import com.example.somaggiainfesta.data.Command;
 import com.example.somaggiainfesta.data.Keys;
 import com.example.somaggiainfesta.data.Menu;
-import com.example.somaggiainfesta.fragments.ActiveCommandsFragment;
 import com.example.somaggiainfesta.fragments.CashDeskSettingsFrag;
 import com.example.somaggiainfesta.fragments.OrderFragment;
 import com.example.somaggiainfesta.fragments.StaticCommandsFragment;
@@ -116,7 +114,9 @@ public class CashDesk extends RestaurantModule{
     }
 
     protected void setupActiveFragment(){
-        clearServedUI();
+        if(actualFrag instanceof StaticCommandsFragment && ((StaticCommandsFragment)actualFrag).newItemAnimation){
+            clearServedUI();
+        }
 
         inflateFragment(StaticCommandsFragment.newInstance(true, false));
         activeRecycler = findViewById(R.id.static_recycler);
@@ -139,7 +139,9 @@ public class CashDesk extends RestaurantModule{
     }
 
     protected void setupSettingsFragment(){
-        clearServedUI();
+        if(actualFrag instanceof StaticCommandsFragment && ((StaticCommandsFragment)actualFrag).newItemAnimation){
+            clearServedUI();
+        }
 
         inflateFragment(CashDeskSettingsFrag.newInstance());
         TextView ip = findViewById(R.id.settings_ip);
@@ -153,23 +155,8 @@ public class CashDesk extends RestaurantModule{
     }
 
     private void clearServedUI(){
-        //if the previusly loaded fragment was the served fragment, change the state of the not viewed confirmed commands
-        if(actualFrag instanceof StaticCommandsFragment && ((StaticCommandsFragment)actualFrag).newItemAnimation){
-            servedAdapter.viewCommands();
-        }
-    }
-
-    private void allarmServedIcon(){
-        int servedIndex = getBottomIndexOf("Serviti");
-
-        if(servedIndex != -1){
-            bottomItems[servedIndex].setTextColor(getColor(R.color.colorNotify));
-            //bottomItems[servedIndex].compound
-        }
-
-        //TODO
-        //BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        //bottomNavigationView.getMenu().findItem(R.id.action_served).setIcon(R.drawable.ic_action_notify);
+        servedAdapter.viewCommands();
+        changeIcon(getBottomIndexOf("Serviti"), R.drawable.ic_action_served, R.color.colorPrimaryText);
     }
 
     @SuppressLint("RestrictedApi")
@@ -178,29 +165,29 @@ public class CashDesk extends RestaurantModule{
         fab.setImageDrawable(getDrawable(id));
         fab.setVisibility(View.VISIBLE);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onFABClick(fab);
-            }
-        });
-
-    }
-
-    @SuppressLint("RestrictedApi")
-    private void onFABClick(FloatingActionButton fab){
         if(((StaticCommandsFragment)actualFrag).newItemAnimation){
-            servedAdapter.viewCommands();
-            setupServedFragment();
-            //TODO far scorrere il servedRecycler alla cima
-            fab.setVisibility(View.GONE);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clearServedUI();
+                    setupServedFragment();
+                    activateBottomIcon(getBottomIndexOf("Serviti"));
+                    scrollServedOnTop();
+                    fab.setVisibility(View.GONE);
+                }
+            });
         }else{
-            if(menu != null && menu.isValid()){
-                inflateFragment(OrderFragment.newInstance());
-                setupOrderFragment();
-            }else{
-                Toast.makeText(CashDesk.this, "Menu non disponibile", Toast.LENGTH_LONG).show();
-            }
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(menu != null && menu.isValid()){
+                        inflateFragment(OrderFragment.newInstance());
+                        setupOrderFragment();
+                    }else{
+                        Toast.makeText(CashDesk.this, "Menu non disponibile", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
         }
     }
 
@@ -287,19 +274,25 @@ public class CashDesk extends RestaurantModule{
         });
     }
 
+    private void scrollServedOnTop(){
+        LinearLayoutManager linManager = (LinearLayoutManager) servedRecycler.getLayoutManager();
+        linManager.scrollToPositionWithOffset(0, 0);
+    }
+
     public void onCommandConfirm(int id){
         Command c = activesAdapter.removeCommandById(id);
 
         if(c != null){
-            allarmServedIcon();
+            changeIcon(getBottomIndexOf("Serviti"), R.drawable.ic_action_notify, R.color.colorNotify);
             allarm();
             servedAdapter.putCommand(c);
-            Toast.makeText(CashDesk.this, "Comanda "+id+" confermata", Toast.LENGTH_LONG).show();
+            Toast.makeText(CashDesk.this, "Comanda confermata", Toast.LENGTH_LONG).show();
 
-            if(((StaticCommandsFragment)actualFrag).newItemAnimation)
+            if(((StaticCommandsFragment)actualFrag).newItemAnimation){
                 setupFAB(R.drawable.ic_action_done);
+                scrollServedOnTop();
+            }
         }
-
     }
 
     public void onMenu(Menu m){
