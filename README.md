@@ -8,6 +8,10 @@ The goals of this communication are:
 * send orders from cash desks to kitchen
 * notify cash desks when an order is ready
 
-![alt text](https://github.com/nicholasala/SomaggiaInFesta/blob/master/images/scheme.png)
+<p align="center">
+  <img src="https://github.com/nicholasala/SomaggiaInFesta/blob/master/images/scheme.png">
+</p>
 
-Connections are made through WebSocket protocol. At every menu changes all the connected cash desk are notified and obtain the updated menu. 
+Connections are made through WebSocket protocol. At every menu changes all connected cash desks are notified and get the updated menu.
+
+The architecture used is a peer-to-peer architecture: there is no a fixed kicthen device. A device can choose if work as cash desk or as kitchen at the start of application. In this first version only one kictchen per net is allowed but in the future this structure can be extended.
