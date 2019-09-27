@@ -17,10 +17,12 @@ import java.util.List;
 
 public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.StaticCommandViewHolder> {
     private List<Command> commands;
+    //number of already viewed items of the list
     private int viewed = -1;
 
     public StaticComAdapter(Boolean newItemAnimation){
         this.commands = new ArrayList<>();
+        //if new Itema animation is set for this adapter, initialize viewed at zero
         if(newItemAnimation)
             this.viewed = 0;
     }
@@ -59,6 +61,8 @@ public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.Stat
 
         if(viewed != -1 && i > viewed - 1){
             commandViewHolder.cont.setBackgroundColor(Color.GREEN);
+        }else{
+            commandViewHolder.cont.setBackgroundColor(Color.WHITE);
         }
     }
 

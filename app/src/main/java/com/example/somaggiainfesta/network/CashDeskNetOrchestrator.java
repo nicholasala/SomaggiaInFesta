@@ -52,7 +52,25 @@ public class CashDeskNetOrchestrator extends WebSocketClient {
     @Override
     public void onError(Exception ex) { }
 
-    public void sendCommand(Command c){
-        send(cv.commandToString(c));
+    public boolean sendCommand(Command c){
+        if(isOpen()){
+            send(cv.commandToString(c));
+            return true;
+        }
+
+        return retrySendCommand(c, 4);
+    }
+
+    private boolean retrySendCommand(Command c, int times){
+        reconnect();
+        if(isOpen()){
+            send(cv.commandToString(c));
+            return true;
+        }
+
+        if(times > 0)
+            return retrySendCommand(c, times-1);
+        else
+            return false;
     }
 }

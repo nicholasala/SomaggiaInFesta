@@ -320,8 +320,11 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
 
     public void confirmCommand(Command c){
         servedAdapter.putCommand(c);
-        netManager.confirmCommand(c);
-        Toast.makeText(this, "Comanda confermata", Toast.LENGTH_SHORT).show();
+
+        if(netManager.confirmCommand(c))
+            Toast.makeText(this, "Comanda confermata", Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(this, "Errore con la conferma comanda", Toast.LENGTH_SHORT).show();
     }
 
     public Menu getMenu(){

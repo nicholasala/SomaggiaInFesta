@@ -62,10 +62,15 @@ public class KitchenNetOrchestrator extends WebSocketServer {
     @Override
     public void onError(WebSocket conn, Exception ex) { }
 
-    public void confirmCommand(Command c){
-        for(WebSocket ws : getConnections())
-            if(c.getCashdesk().equals(ws.getRemoteSocketAddress().getAddress().getHostAddress()))
+    public boolean confirmCommand(Command c){
+        for(WebSocket ws : getConnections()) {
+            if (c.getCashdesk().equals(ws.getRemoteSocketAddress().getAddress().getHostAddress())) {
                 ws.send(cv.commandToConfString(c));
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void broadcastMenu(){

@@ -136,6 +136,8 @@ public class CashDesk extends RestaurantModule{
 
         if(servedAdapter.hasCommandToView())
             setupFAB(R.drawable.ic_action_done);
+
+        scrollServedOnLast();
     }
 
     protected void setupSettingsFragment(){
@@ -163,7 +165,8 @@ public class CashDesk extends RestaurantModule{
     }
 
     private void scrollServedOnLast(){
-        servedRecycler.smoothScrollToPosition(servedAdapter.getItemCount()-1);
+        if(servedAdapter.getItemCount() > 0)
+            servedRecycler.smoothScrollToPosition(servedAdapter.getItemCount()-1);
     }
 
     @SuppressLint("RestrictedApi")
@@ -258,7 +261,9 @@ public class CashDesk extends RestaurantModule{
 
                                     c.setAdded(sAdded);
                                     c.setNumber(Integer.valueOf(number.getText().toString()));
-                                    netManager.sendCommand(c);
+                                    if(!netManager.sendCommand(c)){
+                                        Toast.makeText(CashDesk.this, "Errore con la connessione alla cucina", Toast.LENGTH_LONG).show();
+                                    }
 
                                     activesAdapter.putCommand(c);
                                     setupActiveFragment();
