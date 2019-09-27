@@ -37,13 +37,14 @@ public class ActiveComAdapter extends RecyclerView.Adapter<ActiveComAdapter.Acti
         StringBuilder sb = new StringBuilder();
         String[] added = command.getAdded();
 
-        for(int a=0; a<added.length - 1; a++){
-            sb.append(added[a]);
-            sb.append(" - ");
-        }
+        if(added.length > 0){
+            for(int a=0; a<added.length - 1; a++){
+                sb.append(added[a]);
+                sb.append(" - ");
+            }
 
-        if(added.length > 0)
             sb.append(added[added.length-1]);
+        }
 
         commandViewHolder.added.setText(sb.toString());
         commandViewHolder.number.setText(String.valueOf(command.getNumber()));

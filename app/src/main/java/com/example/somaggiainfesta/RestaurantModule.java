@@ -1,7 +1,6 @@
 package com.example.somaggiainfesta;
 
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;

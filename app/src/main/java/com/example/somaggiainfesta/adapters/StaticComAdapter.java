@@ -17,12 +17,12 @@ import java.util.List;
 
 public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.StaticCommandViewHolder> {
     private List<Command> commands;
-    private List<Boolean> viewed;
+    private int viewed = -1;
 
     public StaticComAdapter(Boolean newItemAnimation){
         this.commands = new ArrayList<>();
         if(newItemAnimation)
-            this.viewed = new ArrayList<>();
+            this.viewed = 0;
     }
 
     @NonNull
@@ -40,13 +40,14 @@ public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.Stat
         StringBuilder sb = new StringBuilder();
         String[] added = command.getAdded();
 
-        for(int a=0; a<added.length - 1; a++){
-            sb.append(added[a]);
-            sb.append(" - ");
-        }
+        if(added.length > 0){
+            for(int a=0; a<added.length - 1; a++){
+                sb.append(added[a]);
+                sb.append(" - ");
+            }
 
-        if(added.length > 0)
             sb.append(added[added.length-1]);
+        }
 
         commandViewHolder.added.setText(sb.toString());
         commandViewHolder.number.setText(String.valueOf(command.getNumber()));
@@ -56,7 +57,7 @@ public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.Stat
             commandViewHolder.id.setText(String.valueOf(command.getId()));
         }
 
-        if(viewed != null && !viewed.get(i)){
+        if(viewed != -1 && i > viewed - 1){
             commandViewHolder.cont.setBackgroundColor(Color.GREEN);
         }
     }
@@ -83,25 +84,17 @@ public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.Stat
 
     public void putCommand(Command c){
         commands.add(c);
-        if(viewed != null)
-            viewed.add(false);
         notifyItemInserted(commands.size() - 1);
     }
 
     public void viewCommands(){
-        if(viewed != null){
-            for(int i=viewed.size() - 1; i>=0; i--){
-                if(!viewed.get(i))
-                    viewed.set(i, true);
-                else
-                    break;
-            }
-        }
+        if(viewed != -1)
+            viewed = commands.size();
     }
 
     public boolean hasCommandToView(){
-        if(viewed != null && viewed.size() > 0){
-            return !viewed.get(viewed.size()-1);
+        if(viewed != -1){
+            return viewed < commands.size();
         }
 
         return false;

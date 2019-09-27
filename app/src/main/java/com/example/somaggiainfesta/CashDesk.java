@@ -155,8 +155,15 @@ public class CashDesk extends RestaurantModule{
     }
 
     private void clearServedUI(){
+        servedRecycler.setAdapter(null);
         servedAdapter.viewCommands();
+        servedRecycler.setAdapter(servedAdapter);
+        servedAdapter.notifyDataSetChanged();
         changeIcon(getBottomIndexOf("Serviti"), R.drawable.ic_action_served, R.color.colorPrimaryText);
+    }
+
+    private void scrollServedOnLast(){
+        servedRecycler.smoothScrollToPosition(servedAdapter.getItemCount()-1);
     }
 
     @SuppressLint("RestrictedApi")
@@ -170,9 +177,8 @@ public class CashDesk extends RestaurantModule{
                 @Override
                 public void onClick(View v) {
                     clearServedUI();
-                    setupServedFragment();
+                    scrollServedOnLast();
                     activateBottomIcon(getBottomIndexOf("Serviti"));
-                    scrollServedOnTop();
                     fab.setVisibility(View.GONE);
                 }
             });
@@ -274,11 +280,6 @@ public class CashDesk extends RestaurantModule{
         });
     }
 
-    private void scrollServedOnTop(){
-        LinearLayoutManager linManager = (LinearLayoutManager) servedRecycler.getLayoutManager();
-        linManager.scrollToPositionWithOffset(0, 0);
-    }
-
     public void onCommandConfirm(int id){
         Command c = activesAdapter.removeCommandById(id);
 
@@ -290,7 +291,7 @@ public class CashDesk extends RestaurantModule{
 
             if(((StaticCommandsFragment)actualFrag).newItemAnimation){
                 setupFAB(R.drawable.ic_action_done);
-                scrollServedOnTop();
+                scrollServedOnLast();
             }
         }
     }
