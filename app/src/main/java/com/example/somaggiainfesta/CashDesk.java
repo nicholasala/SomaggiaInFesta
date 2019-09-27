@@ -81,25 +81,35 @@ public class CashDesk extends RestaurantModule{
                 break;
             case FOUND:
                 if(!isKitchen()){
-                    setContentView(R.layout.activity_cashdesk);
-                    inflateBottomBar();
-                    setupBottomBar();
-
                     //setup network connection and connect with kitchen
                     try {
                         netManager = new CashDeskNetOrchestrator( new URI( Keys.ip.kitchen_url + ":" + Keys.ip.ws_port ), this);
-                        netManager.connect();
-                    } catch (URISyntaxException e) {
-                        Toast.makeText(CashDesk.this, "Errore con la connessione alla cucina", Toast.LENGTH_SHORT).show();
+                        netManager.connectBlocking();
+
+                        //if connection is open, setup cashdesk ui
+                        if(netManager.isOpen()){
+                            //setup UI
+                            setContentView(R.layout.activity_cashdesk);
+                            inflateBottomBar();
+                            setupBottomBar();
+
+                            //setup adapters
+                            activesAdapter = new StaticComAdapter(false);
+                            servedAdapter = new StaticComAdapter(true);
+
+                            //setup first fragment
+                            setupActiveFragment();
+                        }else{
+                            infoText.setText(R.string.not_active_kitchen);
+                            retryButton.setVisibility(View.VISIBLE);
+                        }
+                    } catch (URISyntaxException | InterruptedException e) {
                         e.printStackTrace();
+
+                        infoText.setText(R.string.network_error);
+                        retryButton.setVisibility(View.VISIBLE);
                     }
 
-                    //setup adapters
-                    activesAdapter = new StaticComAdapter(false);
-                    servedAdapter = new StaticComAdapter(true);
-
-                    //setup manually first fragment
-                    setupActiveFragment();
                 }else{
                     infoText.setText(R.string.cucina);
                     retryButton.setVisibility(View.VISIBLE);
@@ -193,7 +203,7 @@ public class CashDesk extends RestaurantModule{
                         inflateFragment(OrderFragment.newInstance());
                         setupOrderFragment();
                     }else{
-                        Toast.makeText(CashDesk.this, "Menu non disponibile", Toast.LENGTH_LONG).show();
+                        Toast.makeText(CashDesk.this, R.string.menu_not_available, Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -248,27 +258,21 @@ public class CashDesk extends RestaurantModule{
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                String foodName = foods.getSelectedItem().toString();
+                                Command c = new Command(commandId++, foods.getSelectedItem().toString());
+                                List<String> added = addsAdapter.getCheckedAdds();
+                                String[] sAdded = new String[added.size()];
 
-                                if(!foodName.equals("")){
-                                    Command c = new Command(commandId++, foodName);
-                                    List<String> added = addsAdapter.getCheckedAdds();
-                                    String[] sAdded = new String[added.size()];
+                                for(int i=0; i<sAdded.length; i++){
+                                    sAdded[i] = added.get(i);
+                                }
 
-                                    for(int i=0; i<sAdded.length; i++){
-                                        sAdded[i] = added.get(i);
-                                    }
-
-                                    c.setAdded(sAdded);
-                                    c.setNumber(Integer.valueOf(number.getText().toString()));
-                                    if(!netManager.sendCommand(c)){
-                                        Toast.makeText(CashDesk.this, "Errore con la connessione alla cucina", Toast.LENGTH_LONG).show();
-                                    }
-
+                                c.setAdded(sAdded);
+                                c.setNumber(Integer.valueOf(number.getText().toString()));
+                                if(!netManager.sendCommand(c)){
+                                    Toast.makeText(CashDesk.this, R.string.error_connecting_kitchen, Toast.LENGTH_LONG).show();
+                                }else{
                                     activesAdapter.putCommand(c);
                                     setupActiveFragment();
-                                }else{
-                                    Toast.makeText(CashDesk.this, "Comanda non valida", Toast.LENGTH_LONG).show();
                                 }
                             }
                         })
@@ -292,17 +296,20 @@ public class CashDesk extends RestaurantModule{
             changeIcon(getBottomIndexOf("Serviti"), R.drawable.ic_action_notify, R.color.colorNotify);
             allarm();
             servedAdapter.putCommand(c);
-            Toast.makeText(CashDesk.this, "Comanda confermata", Toast.LENGTH_LONG).show();
+            Toast.makeText(CashDesk.this, R.string.command_conf_ok, Toast.LENGTH_LONG).show();
 
             if(((StaticCommandsFragment)actualFrag).newItemAnimation){
                 setupFAB(R.drawable.ic_action_done);
                 scrollServedOnLast();
             }
         }
+
+        //TODO all'arrivo di una comanda fantasma, bisogna chiedere alla cucina di ritornarci la comanda completa invece che la sola conferma
+        // così che anche ad un secondo avvio della cassa sia possibile ricevere le comande passate
     }
 
     public void onMenu(Menu m){
-        Toast.makeText(CashDesk.this, "Menu aggiornato", Toast.LENGTH_SHORT).show();
+        Toast.makeText(CashDesk.this, R.string.menu_updated, Toast.LENGTH_SHORT).show();
         this.menu = m;
     }
 }

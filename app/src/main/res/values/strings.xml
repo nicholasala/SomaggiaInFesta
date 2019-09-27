@@ -3,7 +3,13 @@
     <string name="waiting_network">In attesa di operazioni sulla rete</string>
     <string name="founded_kitchen">Cucina esistente in questa rete</string>
     <string name="not_founded_kitchen">Impossibile trovare una cucina nella rete</string>
+    <string name="not_active_kitchen">Cucina non attiva</string>
     <string name="network_error">Errore con la connessione alla rete</string>
     <string name="waiting_ip_change">Modifica dell\'indirizzo ip in "10.27.0.2" necessaria. Inseguito premere bottone prosegui.</string>
     <string name="cucina">L\'ip del dispositivo appartiene a quello della cucina. Cambiare tale indirizzo per proseguire come cassa.</string>
+    <string name="command_conf_ok">"Comanda confermata"</string>
+    <string name="command_conf_error">Errore con la conferma comanda</string>
+    <string name="menu_not_available">Menu non disponibile</string>
+    <string name="error_connecting_kitchen">Errore con la connessione alla cucina</string>
+    <string name="menu_updated">Menu aggiornato</string>
 </resources>

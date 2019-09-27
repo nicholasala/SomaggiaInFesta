@@ -3,23 +3,18 @@ package com.example.somaggiainfesta;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,8 +29,6 @@ import com.example.somaggiainfesta.fragments.KitchenSettingsFrag;
 import com.example.somaggiainfesta.fragments.StaticCommandsFragment;
 import com.example.somaggiainfesta.network.KitchenNetOrchestrator;
 import com.example.somaggiainfesta.network.MessageConverter;
-
-import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -81,6 +74,8 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
 
     @Override
     protected void onDestroy() {
+        //TODO a volte, rimuovendo dal task manager l'app senza tornare indietro di un activity, il server non viene rimosso completamente e questo comporta difficoltà future di connessione
+        // da parte di casse, e molto più probabilmente impossibilità di avviare il server cucina
         if(netManager != null){
             try {
                 netManager.stop();
@@ -142,13 +137,14 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
     }
 
     private void setupKitchen(){
+        //start kitchen server
+        netManager = new KitchenNetOrchestrator(new InetSocketAddress(Keys.ip.kitchen_string, Keys.ip.ws_port), this);
+        netManager.start();
+
+        //setup ui
         setContentView(R.layout.activity_kitchen);
         inflateBottomBar();
         setupBottomBar();
-
-        //setup network connection and start kitchen server
-        netManager = new KitchenNetOrchestrator(new InetSocketAddress(Keys.ip.kitchen_string, Keys.ip.ws_port), this);
-        netManager.start();
 
         //setup adapters
         activesAdapter = new ActiveComAdapter();
@@ -156,7 +152,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         namesAdapter = new MenuElAdapter();
         addsAdapter = new MenuElAdapter();
 
-        //setup manually first fragment
+        //setup first fragment
         setupActiveFragment();
     }
 
@@ -314,17 +310,17 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-        confirmCommand(activesAdapter.getCommand(position));
-        activesAdapter.removeCommand(position);
-    }
+        Command c = activesAdapter.getCommand(position);
 
-    public void confirmCommand(Command c){
-        servedAdapter.putCommand(c);
+        if(netManager.confirmCommand(c)){
+            Toast.makeText(this, R.string.command_conf_ok, Toast.LENGTH_SHORT).show();
+            servedAdapter.putCommand(c);
+            activesAdapter.removeCommand(position);
+        }else{
+            Toast.makeText(this, R.string.command_conf_error, Toast.LENGTH_SHORT).show();
+            activesAdapter.notifyDataSetChanged();
+        }
 
-        if(netManager.confirmCommand(c))
-            Toast.makeText(this, "Comanda confermata", Toast.LENGTH_SHORT).show();
-        else
-            Toast.makeText(this, "Errore con la conferma comanda", Toast.LENGTH_SHORT).show();
     }
 
     public Menu getMenu(){

@@ -27,8 +27,6 @@ public class SwipeController extends Callback {
         return true;
     }
 
-    //TODO
-
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         listener.onSwiped(viewHolder, direction, viewHolder.getAdapterPosition());

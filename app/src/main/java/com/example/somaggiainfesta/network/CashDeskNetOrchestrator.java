@@ -58,19 +58,21 @@ public class CashDeskNetOrchestrator extends WebSocketClient {
             return true;
         }
 
-        return retrySendCommand(c, 4);
-    }
+        try {
+            reconnectBlocking();
 
-    private boolean retrySendCommand(Command c, int times){
-        reconnect();
-        if(isOpen()){
-            send(cv.commandToString(c));
-            return true;
+            if(isOpen()){
+                send(cv.commandToString(c));
+                return true;
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-        if(times > 0)
-            return retrySendCommand(c, times-1);
-        else
-            return false;
+        return false;
     }
 }
+
+//TODO comande multiple
+//TODO miglior gestione del menu quando ci si riconnette per qualche motivo alla cucina (rimane il vecchio ma in realtà dovrebbe aggiornarsi)
+//TODO alla riconnessione con la cucina bisogna gestire le comande fantasma: le comande attive vanno reinviate ;)
