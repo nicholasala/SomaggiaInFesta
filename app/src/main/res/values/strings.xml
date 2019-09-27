@@ -12,4 +12,6 @@
     <string name="menu_not_available">Menu non disponibile</string>
     <string name="error_connecting_kitchen">Errore con la connessione alla cucina</string>
     <string name="menu_updated">Menu aggiornato</string>
+    <string name="no_menu_saved">Nessun menu salvato</string>
+    <string name="menu_loading_error">Errore nel caricamento del menu</string>
 </resources>

@@ -154,6 +154,13 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
 
         //setup first fragment
         setupActiveFragment();
+
+        //load menu if present
+        try {
+            loadMenu();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void setupActiveFragment(){
@@ -278,31 +285,11 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
             @Override
             public void onClick(View v) {
                 try {
-                    FileInputStream fis = Kitchen.this.openFileInput(menuFile);
-                    InputStreamReader isr = new InputStreamReader(fis);
-                    BufferedReader bufferedReader = new BufferedReader(isr);
-                    StringBuilder sb = new StringBuilder();
-                    String line;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        sb.append(line);
-                    }
-
-                    MessageConverter cv = new MessageConverter();
-                    Menu m = cv.stringToMenu(sb.toString());
-                    namesAdapter.clear();
-                    addsAdapter.clear();
-
-                    for(String s : m.getNames())
-                        namesAdapter.putElement(s);
-
-                    for(String s : m.getAdds())
-                        addsAdapter.putElement(s);
-
-                    updateMenu();
+                    loadMenu();
                 } catch (FileNotFoundException fileNotFound) {
-                    Toast.makeText(Kitchen.this, "Nessun menu salvato", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Kitchen.this, R.string.no_menu_saved, Toast.LENGTH_SHORT).show();
                 } catch (IOException ioException) {
-                    Toast.makeText(Kitchen.this, "Errore nel caricamento del menu", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Kitchen.this, R.string.menu_loading_error, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -333,6 +320,31 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
             m.addAdd(s);
 
         return m;
+    }
+
+    public void loadMenu() throws IOException {
+        FileInputStream fis = Kitchen.this.openFileInput(menuFile);
+        InputStreamReader isr = new InputStreamReader(fis);
+        BufferedReader bufferedReader = new BufferedReader(isr);
+        StringBuilder sb = new StringBuilder();
+        String line;
+
+        while ((line = bufferedReader.readLine()) != null) {
+            sb.append(line);
+        }
+
+        MessageConverter cv = new MessageConverter();
+        Menu m = cv.stringToMenu(sb.toString());
+        namesAdapter.clear();
+        addsAdapter.clear();
+
+        for(String s : m.getNames())
+            namesAdapter.putElement(s);
+
+        for(String s : m.getAdds())
+            addsAdapter.putElement(s);
+
+        updateMenu();
     }
 
     public void onMenuElRemoved(View v){
