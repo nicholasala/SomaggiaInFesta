@@ -37,6 +37,9 @@ public class KitchenNetOrchestrator extends WebSocketServer {
         Menu m = Kitchen.menu;
         if(m!= null && m.isValid())
             webSocket.send(cv.menuToString(m));
+
+        //TODO bisognerebbe nel caso di menu non validi, inviare comunque il menu, così che se la cucina esce e poi rientra e non ha menu valido le casse non possano
+        // ordinare con menu fantasma
     }
 
     @Override

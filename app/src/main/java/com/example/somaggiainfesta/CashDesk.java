@@ -298,14 +298,14 @@ public class CashDesk extends RestaurantModule{
             servedAdapter.putCommand(c);
             Toast.makeText(CashDesk.this, R.string.command_conf_ok, Toast.LENGTH_LONG).show();
 
-            if(((StaticCommandsFragment)actualFrag).newItemAnimation){
+            if(actualFrag instanceof StaticCommandsFragment && ((StaticCommandsFragment)actualFrag).newItemAnimation){
                 setupFAB(R.drawable.ic_action_done);
                 scrollServedOnLast();
             }
         }
 
         //TODO all'arrivo di una comanda fantasma, bisogna chiedere alla cucina di ritornarci la comanda completa invece che la sola conferma
-        // così che anche ad un secondo avvio della cassa sia possibile ricevere le comande passate
+        // così che anche ad un secondo avvio della cassa sia possibile ricevere le comande passate (sia servite che attive)
     }
 
     public void onMenu(Menu m){
