@@ -57,7 +57,10 @@ public class ActiveComAdapter extends RecyclerView.Adapter<ActiveComAdapter.Acti
 
     public void removeCommand(int position){
         commands.remove(position);
-        notifyItemRemoved(position);
+
+        try {
+            notifyItemRemoved(position);
+        }catch (NullPointerException ignored){}
     }
 
     public Command getCommand(int position){
@@ -66,7 +69,10 @@ public class ActiveComAdapter extends RecyclerView.Adapter<ActiveComAdapter.Acti
 
     public void putCommand(Command c){
         commands.add(c);
-        notifyItemInserted(commands.size() - 1);
+
+        try {
+            notifyItemInserted(commands.size() - 1);
+        }catch (NullPointerException ignored){}
     }
 
     //ViewHolder

@@ -94,8 +94,7 @@ public class CashDesk extends RestaurantModule{
                             setupBottomBar();
 
                             //setup adapters
-                            activesAdapter = new StaticComAdapter(false);
-                            servedAdapter = new StaticComAdapter(true);
+                            buildAdapters();
 
                             //setup first fragment
                             setupActiveFragment();
@@ -121,6 +120,11 @@ public class CashDesk extends RestaurantModule{
                 retryButton.setVisibility(View.VISIBLE);
                 break;
         }
+    }
+
+    public void buildAdapters(){
+        activesAdapter = new StaticComAdapter(false);
+        servedAdapter = new StaticComAdapter(true);
     }
 
     protected void setupActiveFragment(){
@@ -271,7 +275,7 @@ public class CashDesk extends RestaurantModule{
                                 if(!netManager.sendCommand(c)){
                                     Toast.makeText(CashDesk.this, R.string.error_connecting_kitchen, Toast.LENGTH_LONG).show();
                                 }else{
-                                    activesAdapter.putCommand(c);
+                                    putCommand(c);
                                     setupActiveFragment();
                                 }
                             }
@@ -298,7 +302,7 @@ public class CashDesk extends RestaurantModule{
             servedAdapter.putCommand(c);
             Toast.makeText(CashDesk.this, R.string.command_conf_ok, Toast.LENGTH_LONG).show();
 
-            if(actualFrag instanceof StaticCommandsFragment && ((StaticCommandsFragment)actualFrag).newItemAnimation){
+            if(actualFrag != null && actualFrag instanceof StaticCommandsFragment && ((StaticCommandsFragment)actualFrag).newItemAnimation){
                 setupFAB(R.drawable.ic_action_done);
                 scrollServedOnLast();
             }
@@ -311,5 +315,17 @@ public class CashDesk extends RestaurantModule{
     public void onMenu(Menu m){
         Toast.makeText(CashDesk.this, R.string.menu_updated, Toast.LENGTH_SHORT).show();
         this.menu = m;
+    }
+
+    public void putCommand(Command c){
+        activesAdapter.putCommand(c);
+    }
+
+    public int activeCommands(){
+        return activesAdapter.getItemCount();
+    }
+
+    public int servedCommands(){
+        return servedAdapter.getItemCount();
     }
 }

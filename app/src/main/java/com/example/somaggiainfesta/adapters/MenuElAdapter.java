@@ -38,7 +38,10 @@ public class MenuElAdapter extends RecyclerView.Adapter<MenuElAdapter.MenuElView
 
     public void removeElement(int position){
         elements.remove(position);
-        notifyItemRemoved(position);
+
+        try {
+            notifyItemRemoved(position);
+        }catch (NullPointerException ignored){}
     }
 
     public int indexOf(String s){
@@ -55,7 +58,11 @@ public class MenuElAdapter extends RecyclerView.Adapter<MenuElAdapter.MenuElView
                 return false;
 
         elements.add(el);
-        notifyItemInserted(elements.size() - 1);
+
+        try {
+            notifyItemInserted(elements.size() - 1);
+        }catch (NullPointerException ignored){}
+
         return true;
     }
 

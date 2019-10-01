@@ -78,7 +78,11 @@ public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.Stat
             Command c = commands.get(i);
             if(c.getId() == id){
                 commands.remove(i);
-                notifyItemRemoved(i);
+
+                try {
+                    notifyItemRemoved(i);
+                }catch (NullPointerException ignored){}
+
                 return c;
             }
         }
@@ -88,7 +92,10 @@ public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.Stat
 
     public void putCommand(Command c){
         commands.add(c);
-        notifyItemInserted(commands.size() - 1);
+
+        try {
+            notifyItemInserted(commands.size() - 1);
+        }catch (NullPointerException ignored){}
     }
 
     public void viewCommands(){

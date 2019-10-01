@@ -138,9 +138,10 @@ public abstract class RestaurantModule extends AppCompatActivity {
     }
 
     protected int getBottomIndexOf(String title){
-        for(int i=0; i<bottomItems.length; i++)
-            if(bottomItems[i].getText().toString().equals(title))
-                return i;
+        if(bottomItems != null)
+            for(int i=0; i<bottomItems.length; i++)
+                if(bottomItems[i].getText().toString().equals(title))
+                    return i;
 
         return -1;
     }

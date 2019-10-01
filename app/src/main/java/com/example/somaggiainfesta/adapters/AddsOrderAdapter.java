@@ -48,7 +48,10 @@ public class AddsOrderAdapter extends RecyclerView.Adapter<AddsOrderAdapter.AddV
     public void removeElement(int position){
         adds.remove(position);
         checked.remove(position);
-        notifyItemRemoved(position);
+
+        try {
+            notifyItemRemoved(position);
+        }catch (NullPointerException ignored){}
     }
 
     public boolean putElement(String el){
@@ -58,7 +61,11 @@ public class AddsOrderAdapter extends RecyclerView.Adapter<AddsOrderAdapter.AddV
 
         adds.add(el);
         checked.add(false);
-        notifyItemInserted(adds.size() - 1);
+
+        try {
+            notifyItemInserted(adds.size() - 1);
+        }catch (NullPointerException ignored){}
+
         return true;
     }
 

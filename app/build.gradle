@@ -8,7 +8,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -27,7 +27,21 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.android.support:cardview-v7:28.0.0'
     implementation "org.java-websocket:Java-WebSocket:1.4.0"
+
+    // Testing-only dependencies
+    androidTestImplementation 'androidx.test:core:' + rootProject.coreVersion
+    androidTestImplementation 'androidx.test:core-ktx:' + rootProject.coreVersion
+    androidTestImplementation 'androidx.test.ext:junit:' + rootProject.extJUnitVersion
+    androidTestImplementation 'androidx.test.ext:junit-ktx:' + rootProject.extJUnitVersion
+    androidTestImplementation 'androidx.test:runner:' + rootProject.runnerVersion
+    androidTestImplementation 'androidx.test.espresso:espresso-core:' + rootProject.espressoVersion
+    androidTestImplementation 'androidx.test:rules:' + rootProject.rulesVersion
+
+    testImplementation 'androidx.test:core:' + rootProject.coreVersion;
+    testImplementation 'androidx.test.ext:junit:' + rootProject.extJUnitVersion
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    testImplementation 'org.robolectric:robolectric:' + rootProject.robolectricVersion
+    testImplementation 'androidx.test.espresso:espresso-core:' + rootProject.espressoVersion
+    testImplementation 'androidx.test.espresso:espresso-intents:' + rootProject.espressoVersion
+    testImplementation 'androidx.test.ext:truth:' + rootProject.extTruthVersion
 }

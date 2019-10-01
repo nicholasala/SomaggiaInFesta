@@ -147,10 +147,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         setupBottomBar();
 
         //setup adapters
-        activesAdapter = new ActiveComAdapter();
-        servedAdapter = new StaticComAdapter(false);
-        namesAdapter = new MenuElAdapter();
-        addsAdapter = new MenuElAdapter();
+        buildAdapters();
 
         //setup first fragment
         setupActiveFragment();
@@ -161,6 +158,13 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void buildAdapters(){
+        activesAdapter = new ActiveComAdapter();
+        servedAdapter = new StaticComAdapter(false);
+        namesAdapter = new MenuElAdapter();
+        addsAdapter = new MenuElAdapter();
     }
 
     protected void setupActiveFragment(){
