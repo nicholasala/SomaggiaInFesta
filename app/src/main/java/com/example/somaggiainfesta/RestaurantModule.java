@@ -1,5 +1,7 @@
 package com.example.somaggiainfesta;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -11,10 +13,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.somaggiainfesta.data.Command;
 import com.example.somaggiainfesta.data.Keys;
 import com.example.somaggiainfesta.fragments.BottomBarFragment;
 import com.example.somaggiainfesta.network.KitchenFinder;
+
+import java.util.List;
 
 //abstract class that represent component of a restaurant (cashdesk, kitchen, ...)
 public abstract class RestaurantModule extends AppCompatActivity {
@@ -22,8 +28,6 @@ public abstract class RestaurantModule extends AppCompatActivity {
     protected TextView[] bottomItems;
 
     public abstract void onKitchenInfo(Keys.kitchenState state);
-
-    protected void findKitchen(){ new KitchenFinder(this).execute(); }
 
     public String myIp(){
         WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
@@ -46,6 +50,8 @@ public abstract class RestaurantModule extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    protected void findKitchen(){ new KitchenFinder(this).execute(); }
 
     protected void inflateFragment(Fragment frag){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -151,5 +157,19 @@ public abstract class RestaurantModule extends AppCompatActivity {
             bottomItems[index].setCompoundDrawablesWithIntrinsicBounds(0, iconId, 0, 0);
             bottomItems[index].getCompoundDrawables()[1].setTint(getColor(colorId));
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(RestaurantModule.this)
+                .setTitle(R.string.on_back_alert)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        RestaurantModule.this.onBackPressed();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 }

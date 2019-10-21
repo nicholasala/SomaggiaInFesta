@@ -40,6 +40,9 @@ public class KitchenNetOrchestrator extends WebSocketServer {
 
         //TODO bisognerebbe nel caso di menu non validi, inviare comunque il menu, così che se la cucina esce e poi rientra e non ha menu valido le casse non possano
         // ordinare con menu fantasma
+
+        //TODO bisognerebbe all'apertura di una nuova connessione, chiedere alla cassa se ha comande attive, e se si farsele inviare
+        // così da mantenere uno stato precedente
     }
 
     @Override

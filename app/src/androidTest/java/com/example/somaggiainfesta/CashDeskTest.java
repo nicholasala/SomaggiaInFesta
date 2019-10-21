@@ -43,7 +43,7 @@ public class CashDeskTest {
         onView(withId(R.id.waitingText)).check(matches(isDisplayed()));
 
         //wait until text of label is updated through retry button state
-        //TODO sistemare attraverso https://developer.android.com/reference/androidx/test/espresso/IdlingResource
+        //TODO sistemare attraverso https://developer.android.com/reference/androidx/test/espresso/IdlingResource, dato che bisognerebbe far aspettare che il testo sia pronto
 
         onView(withId(R.id.waitingText)).check(matches(withText(appContext.getResources().getString(R.string.network_error))));
 

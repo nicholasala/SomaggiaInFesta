@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 //tool for convert commands between json - Command - Menu
+//TODO https://msgpack.org/
 public class MessageConverter {
 
     public String getHandshakeText(){

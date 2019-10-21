@@ -25,6 +25,9 @@ public class CashDeskNetOrchestrator extends WebSocketClient {
     @Override
     public void onOpen(ServerHandshake handshakedata) {
         send(cv.getHandshakeText());
+
+        //TODO all'apertura della connessione con la cucina bisogna chiedere alla cucina se la cassa con il seguente ip ha delle comande attive in cucina
+        // se si bisogna farsele inviare
     }
 
     @Override
