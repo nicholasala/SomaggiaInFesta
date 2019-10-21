@@ -166,10 +166,10 @@ public abstract class RestaurantModule extends AppCompatActivity {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        RestaurantModule.this.onBackPressed();
+                        RestaurantModule.super.onBackPressed();
                     }
                 })
-                .setNegativeButton(android.R.string.cancel, null)
+                .setNegativeButton(R.string.cancel, null)
                 .show();
     }
 }
