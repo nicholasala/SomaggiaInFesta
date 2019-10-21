@@ -14,5 +14,5 @@
     <string name="menu_updated">Menu aggiornato</string>
     <string name="no_menu_saved">Nessun menu salvato</string>
     <string name="menu_loading_error">Errore nel caricamento del menu</string>
-    <string name="on_back_alert">Uscire dall'applicazione ? i dati verranno eliminati</string>
+    <string name="on_back_alert">Uscire dall\'applicazione ? i dati verranno eliminati</string>
 </resources>
