@@ -160,17 +160,5 @@ public abstract class RestaurantModule extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        new AlertDialog.Builder(RestaurantModule.this)
-                .setTitle(R.string.on_back_alert)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        RestaurantModule.super.onBackPressed();
-                    }
-                })
-                .setNegativeButton(R.string.cancel, null)
-                .show();
-    }
+    public abstract void onEvent(Keys.Event e);
 }

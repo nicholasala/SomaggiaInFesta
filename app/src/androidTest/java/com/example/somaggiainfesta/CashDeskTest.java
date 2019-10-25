@@ -23,7 +23,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 @RunWith(AndroidJUnit4.class)
 public class CashDeskTest {
     /**
-     * Use {@link ActivityScenarioRule} to create and launch the activity under test, and close it
+     * Use {@link ActivityScenarioRule} to create and launch the activity under test, and correctEndOfService it
      * after test completes.
      */
     @Rule public ActivityScenarioRule<MainActivity> activityScenarioRule = new ActivityScenarioRule<>(MainActivity.class);

@@ -78,6 +78,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         // da parte di casse, e molto più probabilmente impossibilità di avviare il server cucina
         if(netManager != null){
             try {
+                netManager.closeConnections();
                 netManager.stop();
             } catch (IOException | InterruptedException  e) {
                 e.printStackTrace();
@@ -300,6 +301,11 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
     }
 
     @Override
+    public void onEvent(Keys.Event e) {
+        //TODO handle events
+    }
+
+    @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
         Command c = activesAdapter.getCommand(position);
 
@@ -420,5 +426,20 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
 
         sb.append("\n\n\n");
         return sb.toString();
+    }
+
+    @Override
+    public void onBackPressed(){
+        new AlertDialog.Builder(Kitchen.this)
+                .setTitle(R.string.on_back_alert)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        netManager.closeConnections();
+                        Kitchen.super.onBackPressed();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
     }
 }

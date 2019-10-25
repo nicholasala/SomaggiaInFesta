@@ -64,7 +64,7 @@ public class CashDesk extends RestaurantModule{
     @Override
     protected void onDestroy() {
         if(netManager != null){
-            netManager.closeConnection(Keys.MessageCode.close, Keys.MessageText.close);
+            netManager.closeConnection(Keys.MessageCode.correctEndOfServiceCashDesk, Keys.MessageText.endservice);
             netManager.close();
         }
 
@@ -168,6 +168,40 @@ public class CashDesk extends RestaurantModule{
         ip.setText("Identificativo cassa: "+myIp.substring(myIp.lastIndexOf('.') + 1));
         served.setText("Comande servite: "+servedAdapter.getItemCount());
         actives.setText("Comande attive: "+activesAdapter.getItemCount());
+    }
+
+    @Override
+    public void onEvent(Keys.Event event) {
+        //TODO handle events
+
+        switch (event){
+            case CONNCLOSED:
+//                new AlertDialog.Builder(CashDesk.this)
+//                        .setTitle(R.string.on_try_reconnect)
+//                        .setMessage(R.string.on_try_reconnect_message)
+//                        .setCancelable(true)
+//                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                if(netManager.tryReconnect())
+//                                    Toast.makeText(CashDesk.this, R.string.on_reconnect_succesful, Toast.LENGTH_LONG).show();
+//                                else
+//                                    CashDesk.this.onEvent(Keys.Event.CONNCLOSED);
+//                            }
+//                        })
+//                        .setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                CashDesk.this.onBackPressed();
+//                            }
+//                        })
+//                        .show();
+
+                break;
+            default:
+
+                break;
+        }
     }
 
     private void clearServedUI(){
@@ -332,4 +366,22 @@ public class CashDesk extends RestaurantModule{
     public List<Command> getActiveCommands() { return activesAdapter.getCommands(); }
 
     public List<Command> getServedCommands() { return servedAdapter.getCommands(); }
+
+    @Override
+    public void onBackPressed() {
+        if(actualFrag instanceof StaticCommandsFragment || actualFrag instanceof CashDeskSettingsFrag){
+            new AlertDialog.Builder(CashDesk.this)
+                    .setTitle(R.string.on_back_alert)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            CashDesk.super.onBackPressed();
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, null)
+                    .show();
+        }else{
+            CashDesk.super.onBackPressed();
+        }
+    }
 }

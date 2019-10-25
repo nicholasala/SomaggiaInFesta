@@ -82,4 +82,9 @@ public class KitchenNetOrchestrator extends WebSocketServer {
     public void broadcastMenu(){
         broadcast(cv.menuToString(Kitchen.menu));
     }
+
+    public void closeConnections(){
+        for(WebSocket ws : getConnections())
+            ws.closeConnection(Keys.MessageCode.correctEndOfServiceKitchen, Keys.MessageText.endservice);
+    }
 }

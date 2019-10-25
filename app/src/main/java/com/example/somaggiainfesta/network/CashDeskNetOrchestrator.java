@@ -50,7 +50,24 @@ public class CashDeskNetOrchestrator extends WebSocketClient {
     }
 
     @Override
-    public void onClose(int code, String reason, boolean remote) { }
+    public void onClose(int code, String reason, boolean remote) {
+        //TODO verificare perchè il metodo KitchenNetOrchestrator.closeConnections non riesce a mandare in uscita della cucina la chiusura corretta
+        // la chiusura arriva con un codice probabilmente interno della libreria, è come se ci fosse qualcosa che chiamasse la close sovrastando la
+        // nostra chiamata che dovrebbe tornare come codice Keys.MessageCode.correctEndOfServiceKitchen
+
+        switch(code){
+            case -1:
+                //connection refused
+                break;
+            case Keys.MessageCode.correctEndOfServiceKitchen:
+                //new EventsDispatcher(this.context, Keys.Event.CORRECTCONNCLOSEDFROMKITCHEN).execute();
+                break;
+            case Keys.MessageCode.correctEndOfServiceCashDesk:
+                break;
+            default:
+                new EventsDispatcher(this.context, Keys.Event.CONNCLOSED).execute();
+        }
+    }
 
     @Override
     public void onError(Exception ex) { }
@@ -73,6 +90,16 @@ public class CashDeskNetOrchestrator extends WebSocketClient {
         }
 
         return false;
+    }
+
+    public boolean tryReconnect(){
+        try {
+            reconnectBlocking();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return isOpen();
     }
 }
 

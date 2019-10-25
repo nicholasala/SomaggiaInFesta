@@ -15,5 +15,10 @@
     <string name="no_menu_saved">Nessun menu salvato</string>
     <string name="menu_loading_error">Errore nel caricamento del menu</string>
     <string name="on_back_alert">Uscire ? I dati verranno eliminati</string>
+    <string name="on_try_reconnect">Cucina disattivata</string>
+    <string name="on_try_reconnect_message">La connessione alla cucina è stata disattivata, provare riconnessione ?</string>
+    <string name="on_reconnect_succesful">Riconnessione avvenuta</string>
     <string name="cancel">Annulla</string>
+    <string name="exit">Esci</string>
+    <string name="yes">si</string>
 </resources>
