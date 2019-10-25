@@ -111,6 +111,10 @@ public class StaticComAdapter extends RecyclerView.Adapter<StaticComAdapter.Stat
         return false;
     }
 
+    public int commandsToViewNumber(){
+        return commands.size() - viewed;
+    }
+
     //ViewHolder
     public class StaticCommandViewHolder extends RecyclerView.ViewHolder{
         private TextView name, added, number, id;

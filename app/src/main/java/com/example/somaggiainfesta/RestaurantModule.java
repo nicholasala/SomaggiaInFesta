@@ -13,17 +13,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.somaggiainfesta.data.Command;
 import com.example.somaggiainfesta.data.Keys;
 import com.example.somaggiainfesta.fragments.BottomBarFragment;
 import com.example.somaggiainfesta.network.KitchenFinder;
 
-import java.util.List;
-
 //abstract class that represent component of a restaurant (cashdesk, kitchen, ...)
 public abstract class RestaurantModule extends AppCompatActivity {
+    //TODO activesAdapter e servedAdapter è corretto che stiano qui, visto che sono presenti sia in cucina che in cassa.
+    // Probabilmente anche i metodi relativi all'aggiunta delle comande attive possono essere generalizzati
+    // anche i test presenti per le casse probabilmente possono essere generalizzati
+
+
     protected Fragment actualFrag;
     protected TextView[] bottomItems;
 

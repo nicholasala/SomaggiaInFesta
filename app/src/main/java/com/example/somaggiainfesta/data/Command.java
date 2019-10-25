@@ -1,5 +1,8 @@
 package com.example.somaggiainfesta.data;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 public class Command {
     private int id;
     private String cashdesk;
@@ -85,5 +88,24 @@ public class Command {
 
     public boolean hasCashDesk(){
         return this.cashdesk != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Command command = (Command) o;
+        return id == command.id &&
+                number == command.number &&
+                Objects.equals(cashdesk, command.cashdesk) &&
+                Objects.equals(name, command.name) &&
+                Arrays.equals(added, command.added);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(id, cashdesk, name, number);
+        result = 31 * result + Arrays.hashCode(added);
+        return result;
     }
 }

@@ -29,3 +29,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 }
+
+//TODO: refactor dell'applicazione, l'ip della cucina non dovrà più essere statico, findkitchen dovrà quindi aprire una connessione con le macchine trovate nella
+//TODO rete e chiedere a loro se sono una cucina. Quindi scansione di rete chiedendo ad ogni ip attivo (tranne router e broadcast).

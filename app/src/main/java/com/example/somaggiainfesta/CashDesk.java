@@ -328,4 +328,8 @@ public class CashDesk extends RestaurantModule{
     public int servedCommands(){
         return servedAdapter.getItemCount();
     }
+
+    public List<Command> getActiveCommands() { return activesAdapter.getCommands(); }
+
+    public List<Command> getServedCommands() { return servedAdapter.getCommands(); }
 }
