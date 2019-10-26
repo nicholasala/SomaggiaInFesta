@@ -150,8 +150,6 @@ public class CashDesk extends RestaurantModule{
 
         if(servedAdapter.hasCommandToView())
             setupFAB(R.drawable.ic_action_done);
-
-        scrollServedOnLast();
     }
 
     protected void setupSettingsFragment(){
@@ -212,11 +210,6 @@ public class CashDesk extends RestaurantModule{
         changeIcon(getBottomIndexOf("Serviti"), R.drawable.ic_action_served, R.color.colorPrimaryText);
     }
 
-    private void scrollServedOnLast(){
-        if(servedAdapter.getItemCount() > 0)
-            servedRecycler.smoothScrollToPosition(servedAdapter.getItemCount()-1);
-    }
-
     @SuppressLint("RestrictedApi")
     private void setupFAB(int id){
         final FloatingActionButton fab = findViewById(R.id.fab);
@@ -228,7 +221,6 @@ public class CashDesk extends RestaurantModule{
                 @Override
                 public void onClick(View v) {
                     clearServedUI();
-                    scrollServedOnLast();
                     activateBottomIcon(getBottomIndexOf("Serviti"));
                     fab.setVisibility(View.GONE);
                 }
@@ -336,10 +328,9 @@ public class CashDesk extends RestaurantModule{
             servedAdapter.putCommand(c);
             Toast.makeText(CashDesk.this, R.string.command_conf_ok, Toast.LENGTH_LONG).show();
 
-            if(actualFrag != null && actualFrag instanceof StaticCommandsFragment && ((StaticCommandsFragment)actualFrag).newItemAnimation){
+            //TODO un giorno sarà bene eliminare il concetto di newItemAnimation e creare due Fragment distinti usando l'ereditarietà quanto possibile
+            if(actualFrag instanceof StaticCommandsFragment && ((StaticCommandsFragment)actualFrag).newItemAnimation)
                 setupFAB(R.drawable.ic_action_done);
-                scrollServedOnLast();
-            }
         }
 
         //TODO all'arrivo di una comanda fantasma, bisogna chiedere alla cucina di ritornarci la comanda completa invece che la sola conferma

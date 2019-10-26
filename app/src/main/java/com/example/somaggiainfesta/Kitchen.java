@@ -25,6 +25,7 @@ import com.example.somaggiainfesta.data.Command;
 import com.example.somaggiainfesta.data.Keys;
 import com.example.somaggiainfesta.data.Menu;
 import com.example.somaggiainfesta.fragments.ActiveCommandsFragment;
+import com.example.somaggiainfesta.fragments.CongratulationsFragment;
 import com.example.somaggiainfesta.fragments.KitchenSettingsFrag;
 import com.example.somaggiainfesta.fragments.StaticCommandsFragment;
 import com.example.somaggiainfesta.network.KitchenNetOrchestrator;
@@ -137,11 +138,18 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         }
     }
 
-    private void setupKitchen(){
+    public void setupKitchen(){
+        startService();
+        setupUi();
+    }
+
+    public void startService(){
         //start kitchen server
         netManager = new KitchenNetOrchestrator(new InetSocketAddress(Keys.ip.kitchen_string, Keys.ip.ws_port), this);
         netManager.start();
+    }
 
+    public void setupUi(){
         //setup ui
         setContentView(R.layout.activity_kitchen);
         inflateBottomBar();
@@ -169,17 +177,29 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
     }
 
     protected void setupActiveFragment(){
-        inflateFragment(ActiveCommandsFragment.newInstance());
-        activeRecycler = findViewById(R.id.active_recycler);
+        if(!checkCongrats()){
+            inflateFragment(ActiveCommandsFragment.newInstance());
+            activeRecycler = findViewById(R.id.active_recycler);
 
-        activeRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        activeRecycler.setItemAnimator(new DefaultItemAnimator());
-        activeRecycler.setAdapter(activesAdapter);
+            activeRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+            activeRecycler.setItemAnimator(new DefaultItemAnimator());
+            activeRecycler.setAdapter(activesAdapter);
 
-        //attach swipe helper to recyclerview
-        SwipeController sc = new SwipeController(this);
-        ItemTouchHelper ith = new ItemTouchHelper(sc);
-        ith.attachToRecyclerView(activeRecycler);
+            //attach swipe helper to recyclerview
+            SwipeController sc = new SwipeController(this);
+            ItemTouchHelper ith = new ItemTouchHelper(sc);
+            ith.attachToRecyclerView(activeRecycler);
+        }else{
+            setupCongratFragment();
+        }
+    }
+
+    protected void setupCongratFragment(){
+        inflateFragment(CongratulationsFragment.newInstance());
+    }
+
+    protected boolean checkCongrats(){
+        return activesAdapter.getItemCount() == 0 && servedAdapter.getItemCount() > 0;
     }
 
     protected void setupServedFragment(){
@@ -313,6 +333,9 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
             Toast.makeText(this, R.string.command_conf_ok, Toast.LENGTH_SHORT).show();
             servedAdapter.putCommand(c);
             activesAdapter.removeCommand(position);
+
+            if(checkCongrats())
+                setupCongratFragment();
         }else{
             Toast.makeText(this, R.string.command_conf_error, Toast.LENGTH_SHORT).show();
             activesAdapter.notifyDataSetChanged();
@@ -395,6 +418,9 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
     public void onCommand(Command c){
         allarm();
         activesAdapter.putCommand(c);
+
+        if(actualFrag instanceof CongratulationsFragment)
+            setupActiveFragment();
     }
 
     public String getServiceDetails(){
