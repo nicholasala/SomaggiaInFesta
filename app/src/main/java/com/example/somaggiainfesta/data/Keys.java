@@ -31,10 +31,12 @@ public class Keys {
         public static final int confirmCommand = 3;
         public static final int correctEndOfServiceCashDesk = 4;
         public static final int correctEndOfServiceKitchen = 5;
+        public static final int kicthenBlocked = 6;
     }
 
     public enum Event {
         CONNCLOSED,
-        CORRECTCONNCLOSEDFROMKITCHEN;
+        CORRECTCONNCLOSEDFROMKITCHEN,
+        KICTHENBLOCKED;
     }
 }

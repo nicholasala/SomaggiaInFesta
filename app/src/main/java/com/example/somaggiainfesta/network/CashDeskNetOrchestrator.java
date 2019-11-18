@@ -64,6 +64,8 @@ public class CashDeskNetOrchestrator extends WebSocketClient {
                 break;
             case Keys.MessageCode.correctEndOfServiceCashDesk:
                 break;
+            case Keys.MessageCode.kicthenBlocked:
+                break;
             default:
                 new EventsDispatcher(this.context, Keys.Event.CONNCLOSED).execute();
         }
