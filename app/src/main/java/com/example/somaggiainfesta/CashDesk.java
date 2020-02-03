@@ -33,6 +33,17 @@ import java.util.List;
 public class CashDesk extends RestaurantModule{
     private TextView infoText;
     private Button retryButton;
+    //TODO non usare lo stesso adapter
+    // fare più adapter e non uno solo che gestisce le animazioni o meno
+    // Pensare ad un adapter stile reduce per non dover contare a mano le comande servite:
+    // il codice dell'aggiunta di un elemento sarà simile a questo:
+    // -
+    // for(e in elements)
+    //       if(commandToAdd.name.equals(e.name))
+    //          e.number++; return;
+    // elements.add(commandToAdd);
+    // return;
+
     private StaticComAdapter activesAdapter;
     private StaticComAdapter servedAdapter;
     private AddsOrderAdapter addsAdapter;
