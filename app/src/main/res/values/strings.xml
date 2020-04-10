@@ -21,4 +21,6 @@
     <string name="cancel">Annulla</string>
     <string name="exit">Esci</string>
     <string name="yes">si</string>
+    <string name="modify">modifica</string>
+    <string name="go_on">prosegui</string>
 </resources>

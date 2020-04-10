@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;import android.view.View;
 
-import com.example.somaggiainfesta.adapters.ActiveComAdapter;
+import com.example.somaggiainfesta.adapters.ActiveCommandsAdapter;
 
 import static androidx.recyclerview.widget.ItemTouchHelper.*;
 
@@ -33,7 +33,7 @@ public class SwipeController extends Callback {
     @Override
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
         if (viewHolder != null) {
-            final View foregroundView = ((ActiveComAdapter.ActiveCommandViewHolder) viewHolder).viewForeground;
+            final View foregroundView = ((ActiveCommandsAdapter.ActiveCommandViewHolder) viewHolder).viewForeground;
 
             getDefaultUIUtil().onSelected(foregroundView);
         }
@@ -43,14 +43,14 @@ public class SwipeController extends Callback {
     public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
                                 RecyclerView.ViewHolder viewHolder, float dX, float dY,
                                 int actionState, boolean isCurrentlyActive) {
-        final View foregroundView = ((ActiveComAdapter.ActiveCommandViewHolder) viewHolder).viewForeground;
+        final View foregroundView = ((ActiveCommandsAdapter.ActiveCommandViewHolder) viewHolder).viewForeground;
         getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY,
                 actionState, isCurrentlyActive);
     }
 
     @Override
     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-        final View foregroundView = ((ActiveComAdapter.ActiveCommandViewHolder) viewHolder).viewForeground;
+        final View foregroundView = ((ActiveCommandsAdapter.ActiveCommandViewHolder) viewHolder).viewForeground;
         getDefaultUIUtil().clearView(foregroundView);
     }
 
@@ -58,7 +58,7 @@ public class SwipeController extends Callback {
     public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
                             @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY,
                             int actionState, boolean isCurrentlyActive) {
-        final View foregroundView = ((ActiveComAdapter.ActiveCommandViewHolder) viewHolder).viewForeground;
+        final View foregroundView = ((ActiveCommandsAdapter.ActiveCommandViewHolder) viewHolder).viewForeground;
 
         getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
                 actionState, isCurrentlyActive);

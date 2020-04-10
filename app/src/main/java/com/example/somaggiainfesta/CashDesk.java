@@ -16,13 +16,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.somaggiainfesta.adapters.AddsOrderAdapter;
-import com.example.somaggiainfesta.adapters.StaticComAdapter;
+import com.example.somaggiainfesta.adapters.StaticAnimatedCommandsAdapter;
+import com.example.somaggiainfesta.adapters.StaticCommandsAdapter;
 import com.example.somaggiainfesta.data.Command;
 import com.example.somaggiainfesta.data.Keys;
 import com.example.somaggiainfesta.data.Menu;
 import com.example.somaggiainfesta.fragments.CashDeskSettingsFrag;
 import com.example.somaggiainfesta.fragments.OrderFragment;
+import com.example.somaggiainfesta.fragments.StaticAnimatedCommandsFragment;
 import com.example.somaggiainfesta.fragments.StaticCommandsFragment;
+import com.example.somaggiainfesta.fragments.StaticFabCommandsFragment;
 import com.example.somaggiainfesta.network.CashDeskNetOrchestrator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -33,22 +36,7 @@ import java.util.List;
 public class CashDesk extends RestaurantModule{
     private TextView infoText;
     private Button retryButton;
-    //TODO non usare lo stesso adapter
-    // fare più adapter e non uno solo che gestisce le animazioni o meno
-    // Pensare ad un adapter stile reduce per non dover contare a mano le comande servite:
-    // il codice dell'aggiunta di un elemento sarà simile a questo:
-    // -+
-    // for(e in elements)
-    //       if(commandToAdd.name.equals(e.name))
-    //          e.number++; return;
-    // elements.add(commandToAdd);
-    // return;
-
-    private StaticComAdapter activesAdapter;
-    private StaticComAdapter servedAdapter;
     private AddsOrderAdapter addsAdapter;
-    private RecyclerView activeRecycler;
-    private RecyclerView servedRecycler;
     private CashDeskNetOrchestrator netManager;
     private Menu menu;
     private Integer commandId = 1;
@@ -81,7 +69,6 @@ public class CashDesk extends RestaurantModule{
 
         super.onDestroy();
     }
-
 
     @Override
     public void onKitchenInfo(Keys.kitchenState state) {
@@ -134,37 +121,42 @@ public class CashDesk extends RestaurantModule{
     }
 
     public void buildAdapters(){
-        activesAdapter = new StaticComAdapter(false);
-        servedAdapter = new StaticComAdapter(true);
+        activesAdapter = new StaticCommandsAdapter();
+        servedAdapter = new StaticAnimatedCommandsAdapter();
     }
 
     protected void setupActiveFragment(){
-        if(actualFrag instanceof StaticCommandsFragment && ((StaticCommandsFragment)actualFrag).newItemAnimation){
+        if(isActualFragmentServed()){
             clearServedUI();
         }
 
-        inflateFragment(StaticCommandsFragment.newInstance(true, false));
-        activeRecycler = findViewById(R.id.static_recycler);
-        activeRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        activeRecycler.setItemAnimator(new DefaultItemAnimator());
-        activeRecycler.setAdapter(activesAdapter);
+        if(!checkCongrats()){
+            inflateFragment(StaticFabCommandsFragment.newInstance());
+            activeRecycler = findViewById(R.id.static_recycler);
+            activeRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+            activeRecycler.setItemAnimator(new DefaultItemAnimator());
+            activeRecycler.setAdapter(activesAdapter);
 
-        setupFAB(R.drawable.ic_action_plus);
+            setupFAB(R.drawable.ic_action_plus);
+        }else{
+            setupCongratFragment();
+        }
+
     }
 
     protected void setupServedFragment(){
-        inflateFragment(StaticCommandsFragment.newInstance(true, true));
+        inflateFragment(StaticAnimatedCommandsFragment.newInstance());
         servedRecycler = findViewById(R.id.static_recycler);
         servedRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true));
         servedRecycler.setItemAnimator(new DefaultItemAnimator());
         servedRecycler.setAdapter(servedAdapter);
 
-        if(servedAdapter.hasCommandToView())
+        if(((StaticAnimatedCommandsAdapter) servedAdapter).hasCommandToView())
             setupFAB(R.drawable.ic_action_done);
     }
 
     protected void setupSettingsFragment(){
-        if(actualFrag instanceof StaticCommandsFragment && ((StaticCommandsFragment)actualFrag).newItemAnimation){
+        if(isActualFragmentServed()){
             clearServedUI();
         }
 
@@ -215,7 +207,7 @@ public class CashDesk extends RestaurantModule{
 
     private void clearServedUI(){
         servedRecycler.setAdapter(null);
-        servedAdapter.viewCommands();
+        ((StaticAnimatedCommandsAdapter)servedAdapter).viewCommands();
         servedRecycler.setAdapter(servedAdapter);
         servedAdapter.notifyDataSetChanged();
         changeIcon(getBottomIndexOf("Serviti"), R.drawable.ic_action_served, R.color.colorPrimaryText);
@@ -227,7 +219,7 @@ public class CashDesk extends RestaurantModule{
         fab.setImageDrawable(getDrawable(id));
         fab.setVisibility(View.VISIBLE);
 
-        if(((StaticCommandsFragment)actualFrag).newItemAnimation){
+        if(isActualFragmentServed()){
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -339,9 +331,10 @@ public class CashDesk extends RestaurantModule{
             servedAdapter.putCommand(c);
             Toast.makeText(CashDesk.this, R.string.command_conf_ok, Toast.LENGTH_LONG).show();
 
-            //TODO un giorno sarà bene eliminare il concetto di newItemAnimation e creare due Fragment distinti usando l'ereditarietà quanto possibile
-            if(actualFrag instanceof StaticCommandsFragment && ((StaticCommandsFragment)actualFrag).newItemAnimation)
+            if(isActualFragmentServed())
                 setupFAB(R.drawable.ic_action_done);
+            else if(isActualFragmentActive() && checkCongrats())
+                setupCongratFragment();
         }
 
         //TODO all'arrivo di una comanda fantasma, bisogna chiedere alla cucina di ritornarci la comanda completa invece che la sola conferma
@@ -385,5 +378,13 @@ public class CashDesk extends RestaurantModule{
         }else{
             CashDesk.super.onBackPressed();
         }
+    }
+
+    private boolean isActualFragmentServed(){
+        return actualFrag instanceof StaticAnimatedCommandsFragment;
+    }
+
+    private boolean isActualFragmentActive(){
+        return actualFrag instanceof StaticFabCommandsFragment;
     }
 }

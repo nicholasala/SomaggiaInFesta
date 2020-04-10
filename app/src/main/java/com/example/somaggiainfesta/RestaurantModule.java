@@ -8,21 +8,24 @@ import android.net.wifi.WifiManager;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.somaggiainfesta.adapters.CommandsAdapter;
 import com.example.somaggiainfesta.data.Keys;
 import com.example.somaggiainfesta.fragments.BottomBarFragment;
+import com.example.somaggiainfesta.fragments.CongratulationsFragment;
 import com.example.somaggiainfesta.network.KitchenFinder;
 
 //abstract class that represent component of a restaurant (cashdesk, kitchen, ...)
 public abstract class RestaurantModule extends AppCompatActivity {
-    //TODO activesAdapter e servedAdapter è corretto che stiano qui, visto che sono presenti sia in cucina che in cassa.
-    // Probabilmente anche i metodi relativi all'aggiunta delle comande attive possono essere generalizzati
-    // anche i test presenti per le casse probabilmente possono essere generalizzati
-
-
+    protected CommandsAdapter activesAdapter;
+    protected CommandsAdapter servedAdapter;
+    protected RecyclerView activeRecycler;
+    protected RecyclerView servedRecycler;
     protected Fragment actualFrag;
     protected TextView[] bottomItems;
 
@@ -159,4 +162,12 @@ public abstract class RestaurantModule extends AppCompatActivity {
     }
 
     public abstract void onEvent(Keys.Event e);
+
+    protected boolean checkCongrats(){
+        return activesAdapter.getItemCount() == 0 && servedAdapter.getItemCount() > 0;
+    }
+
+    protected void setupCongratFragment(){
+        inflateFragment(CongratulationsFragment.newInstance());
+    }
 }

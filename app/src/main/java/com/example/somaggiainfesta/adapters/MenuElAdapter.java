@@ -76,12 +76,12 @@ public class MenuElAdapter extends RecyclerView.Adapter<MenuElAdapter.MenuElView
     }
 
     //ViewHolder
-    public class MenuElViewHolder extends RecyclerView.ViewHolder{
+    static class MenuElViewHolder extends RecyclerView.ViewHolder{
         private TextView name;
 
-        public MenuElViewHolder(View view){
+        MenuElViewHolder(View view){
             super(view);
-            name = (TextView) view.findViewById(R.id.menu_element);
+            name = view.findViewById(R.id.menu_element);
         }
     }
 }

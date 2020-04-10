@@ -4,7 +4,7 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.example.somaggiainfesta"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -15,6 +15,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
     }
 }
 

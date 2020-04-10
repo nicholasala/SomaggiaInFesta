@@ -80,14 +80,14 @@ public class AddsOrderAdapter extends RecyclerView.Adapter<AddsOrderAdapter.AddV
     }
 
     //ViewHolder
-    public class AddViewHolder extends RecyclerView.ViewHolder{
+    static class AddViewHolder extends RecyclerView.ViewHolder{
         private TextView name;
         private CheckBox checkB;
 
-        public AddViewHolder(View view){
+        AddViewHolder(View view){
             super(view);
-            name = (TextView) view.findViewById(R.id.order_add);
-            checkB = (CheckBox) view.findViewById(R.id.order_checkbox);
+            name = view.findViewById(R.id.order_add);
+            checkB = view.findViewById(R.id.order_checkbox);
         }
     }
 }

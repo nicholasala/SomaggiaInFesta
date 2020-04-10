@@ -19,9 +19,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.somaggiainfesta.adapters.ActiveComAdapter;
+import com.example.somaggiainfesta.adapters.ActiveCommandsAdapter;
 import com.example.somaggiainfesta.adapters.MenuElAdapter;
-import com.example.somaggiainfesta.adapters.StaticComAdapter;
+import com.example.somaggiainfesta.adapters.StaticCommandsAdapter;
 import com.example.somaggiainfesta.data.Command;
 import com.example.somaggiainfesta.data.Keys;
 import com.example.somaggiainfesta.data.Menu;
@@ -41,19 +41,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 public class Kitchen extends RestaurantModule implements SwipeController.RecyclerItemTouchHelperListener{
     private TextView infoText;
-    private ActiveComAdapter activesAdapter;
-    private StaticComAdapter servedAdapter;
     private MenuElAdapter namesAdapter;
     private MenuElAdapter addsAdapter;
-    private RecyclerView activeRecycler;
-    private RecyclerView servedRecycler;
     private RecyclerView namesRecycler;
     private RecyclerView addsRecycler;
     private KitchenNetOrchestrator netManager;
@@ -120,12 +113,12 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                 final Button goButton = findViewById(R.id.retry);
                 goButton.setVisibility(View.VISIBLE);
 
-                goButton.setText("modifica");
+                goButton.setText(R.string.modify);
                 goButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         startActivityForResult(new Intent(Settings.ACTION_WIFI_IP_SETTINGS), 0);
-                        goButton.setText("prosegui");
+                        goButton.setText(R.string.go_on);
                         goButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -171,8 +164,8 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
     }
 
     public void buildAdapters(){
-        activesAdapter = new ActiveComAdapter();
-        servedAdapter = new StaticComAdapter(false);
+        activesAdapter = new ActiveCommandsAdapter();
+        servedAdapter = new StaticCommandsAdapter();
         namesAdapter = new MenuElAdapter();
         addsAdapter = new MenuElAdapter();
     }
@@ -195,16 +188,8 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         }
     }
 
-    protected void setupCongratFragment(){
-        inflateFragment(CongratulationsFragment.newInstance());
-    }
-
-    protected boolean checkCongrats(){
-        return activesAdapter.getItemCount() == 0 && servedAdapter.getItemCount() > 0;
-    }
-
     protected void setupServedFragment(){
-        inflateFragment(StaticCommandsFragment.newInstance(false, false));
+        inflateFragment(StaticCommandsFragment.newInstance());
         servedRecycler = findViewById(R.id.static_recycler);
 
         servedRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -290,7 +275,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                                     MessageConverter cv = new MessageConverter();
 
                                     try {
-                                        FileOutputStream fos = Kitchen.this.openFileOutput(menuFile, Kitchen.this.MODE_PRIVATE);
+                                        FileOutputStream fos = Kitchen.this.openFileOutput(menuFile, MODE_PRIVATE);
                                         fos.write(cv.menuToString(m).getBytes());
                                         fos.close();
                                         Toast.makeText(Kitchen.this, "Menu salvato", Toast.LENGTH_SHORT).show();
@@ -425,30 +410,25 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
 
     public String getServiceDetails(){
         StringBuilder sb = new StringBuilder();
-        Calendar c = Calendar.getInstance();
-        DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
         sb.append("SomaggiaInFesta ");
-        sb.append(df.format(new Date()));
+        sb.append(DateFormat.getDateTimeInstance().format(new Date()));
         sb.append("\n");
         sb.append("Serviti: \n");
 
-        ArrayList<Command> served = (ArrayList<Command>) servedAdapter.getCommands();
-        ArrayList<String> distinctElements = new ArrayList<>();
-
-        for(Command cmd : served){
-            if(!distinctElements.contains(cmd.getName()))
-                distinctElements.add(cmd.getName());
-        }
-
-        for(String s : distinctElements){
-            int number = 0;
-            for(int i=0; i<served.size(); i++){
-                if(served.get(i).getName().equals(s))
-                    number = number + served.get(i).getNumber();
-                if(i == served.size() - 1)
-                    sb.append(s + ": "+number+"\n");
-            }
-        }
+        //TODO
+//        List<String> distinctElements = servedAdapter.getCommands().stream()
+//                .forEach(Command::getName)
+//                .distinct()
+//
+//        for(String s : distinctElements){
+//            int number = 0;
+//            for(int i=0; i<served.size(); i++){
+//                if(served.get(i).getName().equals(s))
+//                    number = number + served.get(i).getNumber();
+//                if(i == served.size() - 1)
+//                    sb.append(s).append(": ").append(number).append("\n");
+//            }
+//        }
 
         sb.append("\n\n\n");
         return sb.toString();

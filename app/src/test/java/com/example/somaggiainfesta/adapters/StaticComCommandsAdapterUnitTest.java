@@ -7,12 +7,12 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-public class StaticComAdapterUnitTest {
-    StaticComAdapter sa;
+public class StaticComCommandsAdapterUnitTest {
+    StaticCommandsAdapter sa;
 
     @Before
     public void init(){
-        sa = new StaticComAdapter(true);
+        sa = new StaticCommandsAdapter(true);
     }
 
     @Test
