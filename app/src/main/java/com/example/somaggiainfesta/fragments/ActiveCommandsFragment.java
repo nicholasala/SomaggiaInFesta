@@ -11,8 +11,7 @@ import com.example.somaggiainfesta.R;
 public class ActiveCommandsFragment extends Fragment {
 
     public static ActiveCommandsFragment newInstance(){
-        ActiveCommandsFragment fragment = new ActiveCommandsFragment();
-        return fragment;
+        return new ActiveCommandsFragment();
     }
 
     @Override

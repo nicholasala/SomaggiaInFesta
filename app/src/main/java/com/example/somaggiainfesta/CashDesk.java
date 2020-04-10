@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.somaggiainfesta.adapters.AddsOrderAdapter;
-import com.example.somaggiainfesta.adapters.StaticAnimatedCommandsAdapter;
+import com.example.somaggiainfesta.adapters.AnimatedCompactCommandsAdapter;
 import com.example.somaggiainfesta.adapters.StaticCommandsAdapter;
 import com.example.somaggiainfesta.data.Command;
 import com.example.somaggiainfesta.data.Keys;
@@ -122,7 +122,7 @@ public class CashDesk extends RestaurantModule{
 
     public void buildAdapters(){
         activesAdapter = new StaticCommandsAdapter();
-        servedAdapter = new StaticAnimatedCommandsAdapter();
+        servedAdapter = new AnimatedCompactCommandsAdapter();
     }
 
     protected void setupActiveFragment(){
@@ -151,7 +151,7 @@ public class CashDesk extends RestaurantModule{
         servedRecycler.setItemAnimator(new DefaultItemAnimator());
         servedRecycler.setAdapter(servedAdapter);
 
-        if(((StaticAnimatedCommandsAdapter) servedAdapter).hasCommandToView())
+        if(((AnimatedCompactCommandsAdapter) servedAdapter).hasCommandToView())
             setupFAB(R.drawable.ic_action_done);
     }
 
@@ -169,78 +169,6 @@ public class CashDesk extends RestaurantModule{
         ip.setText("Identificativo cassa: "+myIp.substring(myIp.lastIndexOf('.') + 1));
         served.setText("Comande servite: "+servedAdapter.getItemCount());
         actives.setText("Comande attive: "+activesAdapter.getItemCount());
-    }
-
-    @Override
-    public void onEvent(Keys.Event event) {
-        //TODO handle events
-
-        switch (event){
-            case CONNCLOSED:
-//                new AlertDialog.Builder(CashDesk.this)
-//                        .setTitle(R.string.on_try_reconnect)
-//                        .setMessage(R.string.on_try_reconnect_message)
-//                        .setCancelable(true)
-//                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                if(netManager.tryReconnect())
-//                                    Toast.makeText(CashDesk.this, R.string.on_reconnect_succesful, Toast.LENGTH_LONG).show();
-//                                else
-//                                    CashDesk.this.onEvent(Keys.Event.CONNCLOSED);
-//                            }
-//                        })
-//                        .setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                CashDesk.this.onBackPressed();
-//                            }
-//                        })
-//                        .show();
-
-                break;
-            default:
-
-                break;
-        }
-    }
-
-    private void clearServedUI(){
-        servedRecycler.setAdapter(null);
-        ((StaticAnimatedCommandsAdapter)servedAdapter).viewCommands();
-        servedRecycler.setAdapter(servedAdapter);
-        servedAdapter.notifyDataSetChanged();
-        changeIcon(getBottomIndexOf("Serviti"), R.drawable.ic_action_served, R.color.colorPrimaryText);
-    }
-
-    @SuppressLint("RestrictedApi")
-    private void setupFAB(int id){
-        final FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setImageDrawable(getDrawable(id));
-        fab.setVisibility(View.VISIBLE);
-
-        if(isActualFragmentServed()){
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clearServedUI();
-                    activateBottomIcon(getBottomIndexOf("Serviti"));
-                    fab.setVisibility(View.GONE);
-                }
-            });
-        }else{
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(menu != null && menu.isValid()){
-                        inflateFragment(OrderFragment.newInstance());
-                        setupOrderFragment();
-                    }else{
-                        Toast.makeText(CashDesk.this, R.string.menu_not_available, Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-        }
     }
 
     private void setupOrderFragment(){
@@ -320,6 +248,78 @@ public class CashDesk extends RestaurantModule{
                 setupActiveFragment();
             }
         });
+    }
+
+    @Override
+    public void onEvent(Keys.Event event) {
+        //TODO handle events
+
+        switch (event){
+            case CONNCLOSED:
+//                new AlertDialog.Builder(CashDesk.this)
+//                        .setTitle(R.string.on_try_reconnect)
+//                        .setMessage(R.string.on_try_reconnect_message)
+//                        .setCancelable(true)
+//                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                if(netManager.tryReconnect())
+//                                    Toast.makeText(CashDesk.this, R.string.on_reconnect_succesful, Toast.LENGTH_LONG).show();
+//                                else
+//                                    CashDesk.this.onEvent(Keys.Event.CONNCLOSED);
+//                            }
+//                        })
+//                        .setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                CashDesk.this.onBackPressed();
+//                            }
+//                        })
+//                        .show();
+
+                break;
+            default:
+
+                break;
+        }
+    }
+
+    private void clearServedUI(){
+        servedRecycler.setAdapter(null);
+        ((AnimatedCompactCommandsAdapter)servedAdapter).viewCommands();
+        servedRecycler.setAdapter(servedAdapter);
+        servedAdapter.notifyDataSetChanged();
+        changeIcon(getBottomIndexOf("Serviti"), R.drawable.ic_action_served, R.color.colorPrimaryText);
+    }
+
+    @SuppressLint("RestrictedApi")
+    private void setupFAB(int id){
+        final FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setImageDrawable(getDrawable(id));
+        fab.setVisibility(View.VISIBLE);
+
+        if(isActualFragmentServed()){
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clearServedUI();
+                    activateBottomIcon(getBottomIndexOf("Serviti"));
+                    fab.setVisibility(View.GONE);
+                }
+            });
+        }else{
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(menu != null && menu.isValid()){
+                        inflateFragment(OrderFragment.newInstance());
+                        setupOrderFragment();
+                    }else{
+                        Toast.makeText(CashDesk.this, R.string.menu_not_available, Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        }
     }
 
     public void onCommandConfirm(int id){

@@ -42,12 +42,10 @@ public abstract class CommandsAdapter<A extends RecyclerView.ViewHolder> extends
         return commands.size();
     }
 
-    public void putCommand(Command c){
+    public int putCommand(Command c){
         commands.add(c);
-
-        try {
-            notifyItemInserted(commands.size() - 1);
-        }catch (NullPointerException ignored){}
+        notifyCommandInserted(commands.size() - 1);
+        return commands.size() - 1;
     }
 
     public void removeCommand(int position){
@@ -82,6 +80,12 @@ public abstract class CommandsAdapter<A extends RecyclerView.ViewHolder> extends
         protected CommandViewHolder(@NonNull View itemView) {
             super(itemView);
         }
+    }
+
+    private void notifyCommandInserted(int position){
+        try {
+            notifyItemInserted(position);
+        }catch (NullPointerException ignored){}
     }
 
 }

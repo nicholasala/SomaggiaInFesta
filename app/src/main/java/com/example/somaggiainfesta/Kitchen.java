@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.somaggiainfesta.adapters.ActiveCommandsAdapter;
+import com.example.somaggiainfesta.adapters.CompactCommandsAdapter;
 import com.example.somaggiainfesta.adapters.MenuElAdapter;
 import com.example.somaggiainfesta.adapters.StaticCommandsAdapter;
 import com.example.somaggiainfesta.data.Command;
@@ -165,7 +166,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
 
     public void buildAdapters(){
         activesAdapter = new ActiveCommandsAdapter();
-        servedAdapter = new StaticCommandsAdapter();
+        servedAdapter = new CompactCommandsAdapter();
         namesAdapter = new MenuElAdapter();
         addsAdapter = new MenuElAdapter();
     }
