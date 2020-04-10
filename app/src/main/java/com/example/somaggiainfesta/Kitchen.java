@@ -1,15 +1,16 @@
 package com.example.somaggiainfesta;
 
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -340,7 +341,6 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
             Toast.makeText(this, R.string.command_conf_error, Toast.LENGTH_SHORT).show();
             activesAdapter.notifyDataSetChanged();
         }
-
     }
 
     public Menu getMenu(){

@@ -4,10 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -25,6 +24,7 @@ import com.example.somaggiainfesta.fragments.CashDeskSettingsFrag;
 import com.example.somaggiainfesta.fragments.OrderFragment;
 import com.example.somaggiainfesta.fragments.StaticCommandsFragment;
 import com.example.somaggiainfesta.network.CashDeskNetOrchestrator;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -37,7 +37,7 @@ public class CashDesk extends RestaurantModule{
     // fare più adapter e non uno solo che gestisce le animazioni o meno
     // Pensare ad un adapter stile reduce per non dover contare a mano le comande servite:
     // il codice dell'aggiunta di un elemento sarà simile a questo:
-    // -
+    // -+
     // for(e in elements)
     //       if(commandToAdd.name.equals(e.name))
     //          e.number++; return;
