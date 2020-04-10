@@ -45,8 +45,8 @@ import java.util.Date;
 
 public class Kitchen extends RestaurantModule implements SwipeController.RecyclerItemTouchHelperListener{
     private TextView infoText;
-    private MenuElementsAdapter namesAdapter;
-    private MenuElementsAdapter addsAdapter;
+    private MenuElementsAdapter foodsAdapter;
+    private MenuElementsAdapter additionsAdapter;
     private RecyclerView namesRecycler;
     private RecyclerView addsRecycler;
     private KitchenNetOrchestrator netManager;
@@ -166,8 +166,8 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
     public void buildAdapters(){
         activesAdapter = new DynamicCommandsAdapter();
         servedAdapter = new CompactCommandsAdapter();
-        namesAdapter = new MenuElementsAdapter();
-        addsAdapter = new MenuElementsAdapter();
+        foodsAdapter = new MenuElementsAdapter();
+        additionsAdapter = new MenuElementsAdapter();
     }
 
     protected void setupActiveFragment(){
@@ -203,14 +203,14 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
         addsRecycler = findViewById(R.id.adds_recycler);
         namesRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         namesRecycler.setItemAnimator(new DefaultItemAnimator());
-        namesRecycler.setAdapter(namesAdapter);
+        namesRecycler.setAdapter(foodsAdapter);
 
         namesRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         namesRecycler.setItemAnimator(new DefaultItemAnimator());
-        namesRecycler.setAdapter(namesAdapter);
+        namesRecycler.setAdapter(foodsAdapter);
         addsRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         addsRecycler.setItemAnimator(new DefaultItemAnimator());
-        addsRecycler.setAdapter(addsAdapter);
+        addsRecycler.setAdapter(additionsAdapter);
 
         //setup buttons
         ImageView addFood = findViewById(R.id.add_food_icon);
@@ -230,7 +230,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                             public void onClick(DialogInterface dialog, int which) {
                                 String name = editText.getText().toString();
 
-                                if(!name.equals("") && namesAdapter.putElement(name))
+                                if(!name.equals("") && foodsAdapter.putElement(name))
                                     updateMenu();
                             }
                         })
@@ -252,7 +252,7 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                             public void onClick(DialogInterface dialog, int which) {
                                 String name = editText.getText().toString();
 
-                                if(!name.equals("") && addsAdapter.putElement(name))
+                                if(!name.equals("") && additionsAdapter.putElement(name))
                                     updateMenu();
                             }
                         })
@@ -331,10 +331,10 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
     public Menu getMenu(){
         Menu m = new Menu();
 
-        for(String s : namesAdapter.getElements())
+        for(String s : foodsAdapter.getElements())
             m.addFood(s);
 
-        for(String s : addsAdapter.getElements())
+        for(String s : additionsAdapter.getElements())
             m.addAdd(s);
 
         return m;
@@ -353,14 +353,14 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
 
         MessageConverter cv = new MessageConverter();
         Menu m = cv.stringToMenu(sb.toString());
-        namesAdapter.clear();
-        addsAdapter.clear();
+        foodsAdapter.clear();
+        additionsAdapter.clear();
 
         for(String s : m.getNames())
-            namesAdapter.putElement(s);
+            foodsAdapter.putElement(s);
 
         for(String s : m.getAdds())
-            addsAdapter.putElement(s);
+            additionsAdapter.putElement(s);
 
         updateMenu();
     }
@@ -376,15 +376,15 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(recyclerId == R.id.names_recycler){
-                            int index = namesAdapter.indexOf(toRemove);
+                            int index = foodsAdapter.indexOf(toRemove);
                             if(index != -1){
-                                namesAdapter.removeElement(index);
+                                foodsAdapter.removeElement(index);
                                 updateMenu();
                             }
                         }else if(recyclerId == R.id.adds_recycler){
-                            int index = addsAdapter.indexOf(toRemove);
+                            int index = additionsAdapter.indexOf(toRemove);
                             if(index != -1){
-                                addsAdapter.removeElement(index);
+                                additionsAdapter.removeElement(index);
                                 updateMenu();
                             }
                         }
