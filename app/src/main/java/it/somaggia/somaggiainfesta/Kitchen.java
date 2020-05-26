@@ -42,6 +42,8 @@ import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.function.Consumer;
 
 public class Kitchen extends RestaurantModule implements SwipeController.RecyclerItemTouchHelperListener{
     private TextView infoText;
@@ -85,7 +87,6 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
                 File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), reportFile);
                 FileOutputStream fos = new FileOutputStream(f, true);
                 fos.write(getServiceDetails().getBytes());
-                fos.flush();
                 fos.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -171,21 +172,22 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
     }
 
     protected void setupActiveFragment(){
-        if(!checkCongrats()){
-            inflateFragment(ActiveCommandsFragment.newInstance());
-            activeRecycler = findViewById(R.id.active_recycler);
-
-            activeRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-            activeRecycler.setItemAnimator(new DefaultItemAnimator());
-            activeRecycler.setAdapter(activesAdapter);
-
-            //attach swipe helper to recyclerview
-            SwipeController sc = new SwipeController(this);
-            ItemTouchHelper ith = new ItemTouchHelper(sc);
-            ith.attachToRecyclerView(activeRecycler);
-        }else{
+        if(checkCongrats()){
             setupCongratFragment();
+            return;
         }
+
+        inflateFragment(ActiveCommandsFragment.newInstance());
+        activeRecycler = findViewById(R.id.active_recycler);
+
+        activeRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        activeRecycler.setItemAnimator(new DefaultItemAnimator());
+        activeRecycler.setAdapter(activesAdapter);
+
+        //attach swipe helper to recyclerview
+        SwipeController sc = new SwipeController(this);
+        ItemTouchHelper ith = new ItemTouchHelper(sc);
+        ith.attachToRecyclerView(activeRecycler);
     }
 
     protected void setupServedFragment(){
@@ -410,27 +412,20 @@ public class Kitchen extends RestaurantModule implements SwipeController.Recycle
 
     public String getServiceDetails(){
         StringBuilder sb = new StringBuilder();
+        HashMap<String, Integer> map = new HashMap<>();
+        Consumer<Command> commandConsumer = (Command c) -> {
+            if(map.containsKey(c.getName()))
+                map.replace(c.getName(), map.get(c.getName()) + c.getNumber());
+            else
+                map.put(c.getName(), c.getNumber());
+        };
+
+        servedAdapter.getCommands().stream().forEach(commandConsumer);
+
         sb.append("SomaggiaInFesta ");
         sb.append(DateFormat.getDateTimeInstance().format(new Date()));
-        sb.append("\n");
-        sb.append("Serviti: \n");
-
-        //TODO
-//        List<String> distinctElements = servedAdapter.getCommands().stream()
-//                .forEach(Command::getName)
-//                .distinct()
-//
-//        for(String s : distinctElements){
-//            int number = 0;
-//            for(int i=0; i<served.size(); i++){
-//                if(served.get(i).getName().equals(s))
-//                    number = number + served.get(i).getNumber();
-//                if(i == served.size() - 1)
-//                    sb.append(s).append(": ").append(number).append("\n");
-//            }
-//        }
-
-        sb.append("\n\n\n");
+        sb.append("\nServiti: \n");
+        map.forEach((a, b) -> sb.append(a).append(": ").append(b).append("\n"));
         return sb.toString();
     }
 
