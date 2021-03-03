@@ -3,7 +3,6 @@ package it.somaggia.somaggiainfesta;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
@@ -16,15 +15,9 @@ public class MainActivity extends AppCompatActivity {
         Button kitchen = findViewById(R.id.cucina);
         Button cashDesk = findViewById(R.id.cassa);
 
-        kitchen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { startActivity(new Intent(MainActivity.this, Kitchen.class)); }
-        });
+        kitchen.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, Kitchen.class)));
 
-        cashDesk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { startActivity(new Intent(MainActivity.this, CashDesk.class)); }
-        });
+        cashDesk.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, CashDesk.class)));
     }
 }
 
