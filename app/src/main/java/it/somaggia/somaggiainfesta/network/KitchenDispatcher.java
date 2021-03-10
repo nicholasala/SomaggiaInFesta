@@ -5,15 +5,16 @@ import android.os.AsyncTask;
 import it.somaggia.somaggiainfesta.Kitchen;
 import it.somaggia.somaggiainfesta.model.Command;
 
+// TODO AsyncTask sono deprecati, cambiare tutti gli AsyncTasks in network
 public class KitchenDispatcher extends AsyncTask<Void, Void, Command> {
-    private Kitchen context;
-    private String message;
-    private String cashDeskId;
-    private MessageConverter cv;
+    private final Kitchen kitchenContext;
+    private final String message;
+    private final String cashDeskId;
+    private final MessageConverter cv;
 
-    public KitchenDispatcher(Kitchen context, String message, String cashDeskId)
+    KitchenDispatcher(Kitchen kitchenContext, String message, String cashDeskId)
     {
-        this.context = context;
+        this.kitchenContext = kitchenContext;
         this.message = message;
         this.cashDeskId = cashDeskId;
         this.cv = new MessageConverter();
@@ -29,6 +30,6 @@ public class KitchenDispatcher extends AsyncTask<Void, Void, Command> {
     @Override
     protected void onPostExecute(Command c) {
         super.onPostExecute(c);
-        context.onCommand(c);
+        kitchenContext.onCommand(c);
     }
 }
